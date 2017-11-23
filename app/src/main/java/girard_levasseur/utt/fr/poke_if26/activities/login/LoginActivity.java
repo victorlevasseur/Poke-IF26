@@ -1,4 +1,4 @@
-package girard_levasseur.utt.fr.poke_if26;
+package girard_levasseur.utt.fr.poke_if26.activities.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,12 +32,23 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
+import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    @Inject
+    public LoginService loginService;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -64,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this); // Dagger stuff.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -92,6 +104,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        try {
+            loginService.login("test", new char[]{'a', 'b'});
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+        } catch (ImpossibleActionException e) {
+            e.printStackTrace();
+        }
     }
 
     private void populateAutoComplete() {
