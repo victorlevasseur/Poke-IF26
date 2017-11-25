@@ -2,7 +2,6 @@ package girard_levasseur.utt.fr.poke_if26;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.services.DatabaseService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
-import girard_levasseur.utt.fr.poke_if26.types.User;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 
 import static org.junit.Assert.*;
 

@@ -30,4 +30,11 @@ dependencies {
     compile 'com.google.dagger:dagger-android:2.13'
     compile 'com.google.dagger:dagger-android-support:2.13' // if you use the support libraries
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
+
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }

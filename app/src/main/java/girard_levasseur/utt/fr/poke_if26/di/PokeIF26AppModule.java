@@ -13,7 +13,7 @@ import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
  * Module providing the login service.
  */
 @Module
-public class PokeIF26ApplicationModule {
+public class PokeIF26AppModule {
 
     @Provides
     @Singleton // Only one instance shared accross dependant code.

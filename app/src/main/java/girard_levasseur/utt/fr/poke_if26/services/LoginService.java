@@ -2,7 +2,7 @@ package girard_levasseur.utt.fr.poke_if26.services;
 
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
-import girard_levasseur.utt.fr.poke_if26.types.User;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 
 /**
  * Service that manages the logged-in user.

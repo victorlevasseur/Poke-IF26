@@ -8,7 +8,7 @@ import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.services.DatabaseService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
-import girard_levasseur.utt.fr.poke_if26.types.User;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 
 /**
  * Impl of the login service.
@@ -35,7 +35,8 @@ public class LoginServiceImpl implements LoginService {
         }
 
         if (username.equals("test") && Arrays.equals(password, new char[]{ 'a', 'b', 'c' })) {
-            this.loggedUser = new User("test");
+            // TODO: db
+            this.loggedUser = new User("test", "abc");
             this.erasePassword(password);
             return this.loggedUser;
         } else {
