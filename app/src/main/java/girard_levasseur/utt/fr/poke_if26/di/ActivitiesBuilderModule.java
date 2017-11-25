@@ -1,4 +1,4 @@
-package girard_levasseur.utt.fr.poke_if26.di.modules;
+package girard_levasseur.utt.fr.poke_if26.di;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -9,7 +9,7 @@ import girard_levasseur.utt.fr.poke_if26.activities.login.LoginActivity;
  * so it can create them.
  */
 @Module
-public abstract class ActivitiesModule {
+public abstract class ActivitiesBuilderModule {
 
     // Declare the
     @ContributesAndroidInjector()

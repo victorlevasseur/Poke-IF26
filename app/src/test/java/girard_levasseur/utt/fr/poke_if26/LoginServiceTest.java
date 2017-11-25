@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.services.DatabaseService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.types.User;
@@ -23,7 +24,9 @@ public class LoginServiceTest {
 
     @Before
     public void initializeLoginService() {
-        loginService = new LoginServiceImpl();
+        loginService = new LoginServiceImpl(new DatabaseService(){
+            // TODO: Mock of the DatabaseService
+        });
     }
 
     @Test

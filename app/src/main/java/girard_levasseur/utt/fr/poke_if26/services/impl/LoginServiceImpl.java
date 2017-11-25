@@ -2,8 +2,11 @@ package girard_levasseur.utt.fr.poke_if26.services.impl;
 
 import java.util.Arrays;
 
+import javax.inject.Inject;
+
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.services.DatabaseService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.types.User;
 
@@ -13,7 +16,14 @@ import girard_levasseur.utt.fr.poke_if26.types.User;
  */
 public class LoginServiceImpl implements LoginService {
 
+    private DatabaseService databaseService = null;
+
     private User loggedUser = null;
+
+    @Inject
+    public LoginServiceImpl(DatabaseService databaseService) {
+        this.databaseService = databaseService;
+    }
 
     @Override
     public User login(String username, char[] password)

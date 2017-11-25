@@ -5,8 +5,8 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
-import girard_levasseur.utt.fr.poke_if26.di.modules.ActivitiesModule;
-import girard_levasseur.utt.fr.poke_if26.di.modules.LoginModule;
+import girard_levasseur.utt.fr.poke_if26.di.ActivitiesBuilderModule;
+import girard_levasseur.utt.fr.poke_if26.di.PokeIF26ApplicationModule;
 
 /**
  * Base component for the app level di graph.
@@ -15,8 +15,8 @@ import girard_levasseur.utt.fr.poke_if26.di.modules.LoginModule;
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         // Modules provided at app level:
-        ActivitiesModule.class, // the activities builder
-        LoginModule.class
+        ActivitiesBuilderModule.class, // the activities builder
+        PokeIF26ApplicationModule.class
 })
 @Singleton
 public interface PokeIF26ApplicationComponent {
