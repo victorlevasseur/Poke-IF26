@@ -3,12 +3,11 @@ package girard_levasseur.utt.fr.poke_if26;
 import android.app.Activity;
 import android.app.Application;
 
-import com.activeandroid.ActiveAndroid;
-
 import javax.inject.Inject;
 
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 
 /**
  * Custom application implementation.
@@ -21,7 +20,7 @@ public class PokeIF26App extends Application implements HasActivityInjector {
     @Override
     public void onCreate() {
         super.onCreate();
-        ActiveAndroid.initialize(this);
+
         DaggerPokeIF26AppComponent
                 .builder()
                 .application(this)

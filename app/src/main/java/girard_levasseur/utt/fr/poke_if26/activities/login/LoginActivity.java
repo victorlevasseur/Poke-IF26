@@ -11,7 +11,10 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -32,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
+    private ProgressBar mLoginProgressBar;
     private View mLoginFormView;
 
     @Override
@@ -61,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        mLoginProgressBar = findViewById(R.id.login_progress);
 
         mLoginFormView = findViewById(R.id.login_form);
     }
@@ -103,23 +109,35 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             try {
-                loginService.login(username, password.toCharArray());
-                // TODO: Go to the next activity.
-            } catch (BadCredentialsException e) {
-                // Display the login error dialog.
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.bad_credential_dialog_title)
-                        .setMessage(R.string.bad_credential_dialog_message)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                mPasswordEditText.requestFocus();
+                mLoginProgressBar.setVisibility(View.VISIBLE);
+                loginService.login(username, password.toCharArray())
+                        .delay(2000, TimeUnit.MILLISECONDS, true)
+                        .subscribe(loggedInUser -> {
+                            mLoginProgressBar.setVisibility(View.INVISIBLE);
+                            // TODO: Go to the next activity.
+                        }, err -> {
+                            mLoginProgressBar.setVisibility(View.INVISIBLE);
+                            if (err instanceof BadCredentialsException) {
+                                // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
+                                this.runOnUiThread(() -> {
+                                    // Display the login error dialog.
+                                    new AlertDialog.Builder(this)
+                                            .setTitle(R.string.bad_credential_dialog_title)
+                                            .setMessage(R.string.bad_credential_dialog_message)
+                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    mPasswordEditText.requestFocus();
+                                                }
+                                            })
+                                            .create()
+                                            .show();
+                                });
                             }
-                        })
-                        .create()
-                        .show();
-            } catch (ImpossibleActionException e) {
+                        });
+            } catch (Exception e) {
+                mLoginProgressBar.setVisibility(View.INVISIBLE);
                 e.printStackTrace();
             }
         }

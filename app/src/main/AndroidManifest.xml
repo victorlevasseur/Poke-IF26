@@ -23,10 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- ActiveAndroid configuration for the DB -->
-        <meta-data android:name="AA_DB_NAME" android:value="PokeIF26-db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="1" />
     </application>
 
 </manifest>
