@@ -1,6 +1,8 @@
 package girard_levasseur.utt.fr.poke_if26.activities.signup;
 
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -8,6 +10,7 @@ import android.database.Cursor;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,12 +19,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsername;
+import girard_levasseur.utt.fr.poke_if26.services.UserService;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class SignUpActivity extends AppCompatActivity {
+
+    @Inject
+    public UserService userService;
 
     // UI references.
     private EditText mUsernameEditText;
@@ -32,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this); // Dagger stuff.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         // Set up the login form.
@@ -60,7 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
         mPasswordConfirmationEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mUsernameEditText.getText().toString();
+        String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
         String passwordConfirmation = mPasswordConfirmationEditText.getText().toString();
 
@@ -83,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(username)) {
             mUsernameEditText.setError(getString(R.string.invalid_username_error));
             focusView = mUsernameEditText;
             cancel = true;
@@ -96,7 +108,39 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            // TODO
+            mLoginFormView.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.VISIBLE);
+            this.userService.registerUser(username, password.toCharArray())
+                    .subscribe(newUser -> {
+                        runOnUiThread(() -> {
+                            mLoginFormView.setVisibility(View.VISIBLE);
+                            mProgressView.setVisibility(View.GONE);
+
+                            // Display the login error dialog.
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.account_created_modal_title)
+                                    .setMessage(R.string.account_created_modal_message)
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                        dialog.dismiss();
+                                        NavUtils.navigateUpFromSameTask(this);
+                                    })
+                                    .create()
+                                    .show();
+                        });
+                    }, err -> {
+                        if (err instanceof AlreadyExistingUsername) {
+                            runOnUiThread(() -> {
+                                mLoginFormView.setVisibility(View.VISIBLE);
+                                mProgressView.setVisibility(View.GONE);
+
+                                mUsernameEditText.setError(
+                                        getString(R.string.already_existing_username_error));
+                                mUsernameEditText.requestFocus();
+                            });
+                        } else {
+                            Log.e(SignUpActivity.class.getName(), "Unrecoverable exception", err);
+                        }
+                    });
         }
     }
 

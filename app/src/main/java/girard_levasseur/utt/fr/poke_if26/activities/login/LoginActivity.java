@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -111,17 +112,20 @@ public class LoginActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            mLoginFormView.setVisibility(View.GONE);
             mLoginProgressBar.setVisibility(View.VISIBLE);
             loginService.login(username, password.toCharArray())
                     .delay(2000, TimeUnit.MILLISECONDS, true)
                     .subscribe(loggedInUser -> {
                         this.runOnUiThread(() -> {
+                            mLoginFormView.setVisibility(View.VISIBLE);
                             mLoginProgressBar.setVisibility(View.GONE);
                         });
                         // TODO: Go to the next activity.
                     }, err -> {
                         // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
                         this.runOnUiThread(() -> {
+                            mLoginFormView.setVisibility(View.VISIBLE);
                             mLoginProgressBar.setVisibility(View.GONE);
                             if (err instanceof BadCredentialsException) {
                                 // Display the login error dialog.
@@ -134,6 +138,8 @@ public class LoginActivity extends AppCompatActivity {
                                         })
                                         .create()
                                         .show();
+                            } else {
+                                Log.e(LoginActivity.class.getName(), "Unrecoverable exception", err);
                             }
                         });
                     });

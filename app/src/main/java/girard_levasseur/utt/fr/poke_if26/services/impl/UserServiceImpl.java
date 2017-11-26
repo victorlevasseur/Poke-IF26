@@ -2,6 +2,8 @@ package girard_levasseur.utt.fr.poke_if26.services.impl;
 
 import android.database.sqlite.SQLiteConstraintException;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
@@ -31,11 +33,17 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setUsername(username);
             user.setPasswordHash(PasswordHasher.md5(new String(password)));
+            erasePassword(password);
             try {
                 return db.userDao().insertUser(user);
             } catch(SQLiteConstraintException e) {
                 throw new AlreadyExistingUsername(e.getMessage());
             }
         }).flatMap(createdId -> db.userDao().getUserById(createdId)).subscribeOn(Schedulers.io());
+    }
+
+
+    private void erasePassword(char[] password) {
+        Arrays.fill(password, '*');
     }
 }

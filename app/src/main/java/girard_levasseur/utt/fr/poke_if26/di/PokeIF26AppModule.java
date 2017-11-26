@@ -26,7 +26,9 @@ public class PokeIF26AppModule {
         // with the app context.
         return Room.databaseBuilder(app.getApplicationContext(),
                 PokeIF26Database.class,
-                "poke-if26-db.db").build();
+                "poke-if26-db.db")
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     @Provides

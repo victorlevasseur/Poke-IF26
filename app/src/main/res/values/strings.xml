@@ -19,5 +19,8 @@
     <string name="sign_up_button_label">S\'inscrire</string>
     <string name="invalid_password_length_error">Mot de passe trop court (8 caractères minimum)</string>
     <string name="invalid_password_confirmation_error">Mot de passe différent</string>
+    <string name="already_existing_username_error">Nom d\'utilisateur déjà existant</string>
+    <string name="account_created_modal_title">Confirmation</string>
+    <string name="account_created_modal_message">Votre compte a bien été créé, nous vous invitons maintenant à vous connecter.</string>
 
 </resources>
