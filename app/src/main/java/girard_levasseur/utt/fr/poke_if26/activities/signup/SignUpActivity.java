@@ -38,24 +38,16 @@ public class SignUpActivity extends AppCompatActivity {
         mUsernameEditText = findViewById(R.id.username);
         mPasswordEditText = findViewById(R.id.password);
         mPasswordConfirmationEditText = findViewById(R.id.password_confirmation);
-        mPasswordConfirmationEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptSignUp();
-                    return true;
-                }
-                return false;
+        mPasswordConfirmationEditText.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptSignUp();
+                return true;
             }
+            return false;
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptSignUp();
-            }
-        });
+        mEmailSignInButton.setOnClickListener(view -> attemptSignUp());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -76,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPasswordEditText.setError(getString(R.string.invalid_password_length_error));
             focusView = mPasswordEditText;
             cancel = true;

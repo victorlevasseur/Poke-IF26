@@ -115,13 +115,15 @@ public class LoginActivity extends AppCompatActivity {
             loginService.login(username, password.toCharArray())
                     .delay(2000, TimeUnit.MILLISECONDS, true)
                     .subscribe(loggedInUser -> {
-                        mLoginProgressBar.setVisibility(View.INVISIBLE);
+                        this.runOnUiThread(() -> {
+                            mLoginProgressBar.setVisibility(View.GONE);
+                        });
                         // TODO: Go to the next activity.
                     }, err -> {
-                        mLoginProgressBar.setVisibility(View.INVISIBLE);
-                        if (err instanceof BadCredentialsException) {
-                            // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
-                            this.runOnUiThread(() -> {
+                        // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
+                        this.runOnUiThread(() -> {
+                            mLoginProgressBar.setVisibility(View.GONE);
+                            if (err instanceof BadCredentialsException) {
                                 // Display the login error dialog.
                                 new AlertDialog.Builder(this)
                                         .setTitle(R.string.bad_credential_dialog_title)
@@ -132,8 +134,8 @@ public class LoginActivity extends AppCompatActivity {
                                         })
                                         .create()
                                         .show();
-                            });
-                        }
+                            }
+                        });
                     });
         }
     }
