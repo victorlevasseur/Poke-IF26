@@ -8,10 +8,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="girard_levasseur.utt.fr.poke_if26.activities.login.LoginActivity">
+    tools:context="girard_levasseur.utt.fr.poke_if26.activities.signup.SignUpActivity">
 
     <!-- Login progress -->
-
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -55,8 +54,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password_label"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/password_confirmation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password_confirmation_label"
                     android:imeActionId="6"
-                    android:imeActionLabel="@string/login_button_label"
+                    android:imeActionLabel="@string/sign_up_button_label"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -65,23 +79,14 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/sign_up_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/login_button_label"
+                android:text="@string/sign_up_button_label"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/goto_sign_up_button"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sign_up_link_button_label" />
-
-
         </LinearLayout>
-
     </ScrollView>
 </LinearLayout>

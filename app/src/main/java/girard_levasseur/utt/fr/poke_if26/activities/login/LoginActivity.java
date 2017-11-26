@@ -1,6 +1,7 @@
 package girard_levasseur.utt.fr.poke_if26.activities.login;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.activities.signup.SignUpActivity;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
+    private Button mGotoSignUpButton;
     private ProgressBar mLoginProgressBar;
     private View mLoginFormView;
 
@@ -59,16 +62,16 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
 
         mLoginProgressBar = findViewById(R.id.login_progress);
-
         mLoginFormView = findViewById(R.id.login_form);
+
+        mGotoSignUpButton = findViewById(R.id.goto_sign_up_button);
+        mGotoSignUpButton.setOnClickListener(view -> {
+            Intent gotoSignUpIntent = new Intent(this, SignUpActivity.class);
+            startActivity(gotoSignUpIntent);
+        });
     }
 
 

@@ -1,13 +1,23 @@
 <resources>
     <string name="app_name">Poke-IF26</string>
 
-    <!-- Strings related to login -->
+    <!-- Common strings -->
     <string name="username_label">Identifiant</string>
     <string name="password_label">Mot de passe</string>
+
+    <!-- Strings related to login -->
     <string name="login_button_label">Se connecter</string>
     <string name="bad_credential_dialog_title">Echec de la connexion</string>
     <string name="bad_credential_dialog_message">Les informations de connexion sont invalides.</string>
     <string name="invalid_username_error">Identifiant invalide</string>
     <string name="invalid_password_error">Mot de passe invalide</string>
+    <string name="sign_up_link_button_label">S\'inscrire...</string>
+
+    <!-- Strings related to sign up -->
+    <string name="sign_up_activity_title">Inscription</string>
+    <string name="password_confirmation_label">Mot de passe (confirmation)</string>
+    <string name="sign_up_button_label">S\'inscrire</string>
+    <string name="invalid_password_length_error">Mot de passe trop court (8 caractères minimum)</string>
+    <string name="invalid_password_confirmation_error">Mot de passe différent</string>
 
 </resources>

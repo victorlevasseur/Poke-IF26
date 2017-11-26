@@ -9,21 +9,15 @@ import dagger.Provides;
 import girard_levasseur.utt.fr.poke_if26.PokeIF26App;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
+import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
+import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
 
 /**
  * Module providing the login service.
  */
 @Module
 public class PokeIF26AppModule {
-
-    @Provides
-    @Singleton // Only one instance shared accross dependant code.
-    static LoginService provideLoginService(LoginServiceImpl loginServiceImpl) {
-        // Return an instance of the login service impl,
-        // instanciated by dagger itself to satisfy its deps.
-        return loginServiceImpl;
-    }
 
     @Provides
     @Singleton
@@ -33,6 +27,20 @@ public class PokeIF26AppModule {
         return Room.databaseBuilder(app.getApplicationContext(),
                 PokeIF26Database.class,
                 "poke-if26-db.db").build();
+    }
+
+    @Provides
+    @Singleton
+    static LoginService provideLoginService(LoginServiceImpl impl) {
+        // Return an instance of the login service impl,
+        // instanciated by dagger itself to satisfy its deps.
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    static UserService provideUserService(UserServiceImpl impl) {
+        return impl;
     }
 
 }
