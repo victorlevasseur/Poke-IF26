@@ -108,38 +108,30 @@ public class LoginActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            try {
-                mLoginProgressBar.setVisibility(View.VISIBLE);
-                loginService.login(username, password.toCharArray())
-                        .delay(2000, TimeUnit.MILLISECONDS, true)
-                        .subscribe(loggedInUser -> {
-                            mLoginProgressBar.setVisibility(View.INVISIBLE);
-                            // TODO: Go to the next activity.
-                        }, err -> {
-                            mLoginProgressBar.setVisibility(View.INVISIBLE);
-                            if (err instanceof BadCredentialsException) {
-                                // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
-                                this.runOnUiThread(() -> {
-                                    // Display the login error dialog.
-                                    new AlertDialog.Builder(this)
-                                            .setTitle(R.string.bad_credential_dialog_title)
-                                            .setMessage(R.string.bad_credential_dialog_message)
-                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    mPasswordEditText.requestFocus();
-                                                }
-                                            })
-                                            .create()
-                                            .show();
-                                });
-                            }
-                        });
-            } catch (Exception e) {
-                mLoginProgressBar.setVisibility(View.INVISIBLE);
-                e.printStackTrace();
-            }
+            mLoginProgressBar.setVisibility(View.VISIBLE);
+            loginService.login(username, password.toCharArray())
+                    .delay(2000, TimeUnit.MILLISECONDS, true)
+                    .subscribe(loggedInUser -> {
+                        mLoginProgressBar.setVisibility(View.INVISIBLE);
+                        // TODO: Go to the next activity.
+                    }, err -> {
+                        mLoginProgressBar.setVisibility(View.INVISIBLE);
+                        if (err instanceof BadCredentialsException) {
+                            // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
+                            this.runOnUiThread(() -> {
+                                // Display the login error dialog.
+                                new AlertDialog.Builder(this)
+                                        .setTitle(R.string.bad_credential_dialog_title)
+                                        .setMessage(R.string.bad_credential_dialog_message)
+                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                            dialog.dismiss();
+                                            mPasswordEditText.requestFocus();
+                                        })
+                                        .create()
+                                        .show();
+                            });
+                        }
+                    });
         }
     }
 }

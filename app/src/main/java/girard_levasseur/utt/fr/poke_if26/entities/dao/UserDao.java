@@ -1,7 +1,11 @@
 package girard_levasseur.utt.fr.poke_if26.entities.dao;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -17,9 +21,20 @@ import io.reactivex.Single;
 public interface UserDao {
 
     @Query("SELECT * FROM user")
-    public Single<List<User>> getAll();
+    Single<List<User>> getAll();
 
     @Query("SELECT * FROM user WHERE username = :username")
-    public Single<User> getUserByUsername(String username);
+    Single<User> getUserByUsername(String username);
 
+    @Query("SELECT * FROM user")
+    List<User> getAllSync();
+
+    @Insert
+    void insertUser(User user);
+
+    @Update
+    void updateUser(User user);
+
+    @Delete
+    void deleteUser(User user);
 }

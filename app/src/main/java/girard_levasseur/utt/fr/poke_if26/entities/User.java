@@ -26,15 +26,6 @@ public class User {
         super();
     }
 
-    // TODO: Redo ctor
-    @Ignore
-    public User(String username, String passwordHash) {
-        super();
-        this.username = username;
-        this.passwordHash = passwordHash;
-    }
-
-
     public int getId() {
         return id;
     }

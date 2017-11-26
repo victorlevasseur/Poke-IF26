@@ -13,7 +13,7 @@ import io.reactivex.Single;
  */
 public interface LoginService {
 
-    Single<User> login(String username, char[] password) throws ImpossibleActionException;
+    Single<User> login(String username, char[] password);
 
     void logout() throws ImpossibleActionException;
 

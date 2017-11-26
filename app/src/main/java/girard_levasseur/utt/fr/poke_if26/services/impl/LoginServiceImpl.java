@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import io.reactivex.Flowable;
@@ -32,12 +33,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Single<User> login(String username, char[] password)
-            throws ImpossibleActionException {
+    public Single<User> login(String username, char[] password) {
         if (loggedUser != null) {
             this.erasePassword(password);
-            throw new ImpossibleActionException(
-                    "Impossible à se loguer si un utilisateur l'est déjà !");
+            return Single.error(new ImpossibleActionException(
+                    "Impossible à se loguer si un utilisateur l'est déjà !"));
         }
 
         return this.db.userDao().getUserByUsername(username)
@@ -45,7 +45,8 @@ public class LoginServiceImpl implements LoginService {
                 .onErrorResumeNext(err -> // If the user is not found, throw a BadCredentialsException.
                         Single.error(new BadCredentialsException("Login ou mot de passe incorrect.")))
                 .map(userWithLogin -> {
-                    if (new String(password).equals(userWithLogin.getPasswordHash())) {
+                    if (PasswordHasher.md5(new String(password))
+                            .equals(userWithLogin.getPasswordHash())) {
                         this.loggedUser = userWithLogin;
                         return this.loggedUser;
                     } else {
