@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Poke-IF26</string>
+    <string name="app_name">PokéIF26</string>
 
     <!-- Common strings -->
     <string name="username_label">Identifiant</string>
