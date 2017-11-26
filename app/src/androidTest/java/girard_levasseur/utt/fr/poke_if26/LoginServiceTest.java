@@ -79,23 +79,25 @@ public class LoginServiceTest {
         observer.assertComplete();
         List<User> returnedUser = observer.values();
         assertEquals(returnedUser.size(), 1);
-        assertThat(returnedUser.get(0),
-                new BaseMatcher<User>() {
-                    @Override
-                    public boolean matches(Object item) {
-                        if (item instanceof User) {
-                            User user = (User)item;
-                            return "test".equals(user.username);
-                        } else {
-                            return false;
-                        }
-                    }
 
-                    @Override
-                    public void describeTo(Description description) {
+        BaseMatcher<User> testUserMatcher = new BaseMatcher<User>() {
+            @Override
+            public boolean matches(Object item) {
+                if (item instanceof User) {
+                    User user = (User)item;
+                    return "test".equals(user.username);
+                } else {
+                    return false;
+                }
+            }
 
-                    }
-                });
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
+        assertThat(returnedUser.get(0), testUserMatcher);
+        assertThat(loginService.getConnectedUser(), testUserMatcher);
     }
 
     @Test
