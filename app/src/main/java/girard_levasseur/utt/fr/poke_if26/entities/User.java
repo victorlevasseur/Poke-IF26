@@ -3,6 +3,7 @@ package girard_levasseur.utt.fr.poke_if26.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
@@ -10,10 +11,12 @@ import android.arch.persistence.room.PrimaryKey;
  *
  * Created by victor on 23/11/17.
  */
-@Entity
+@Entity(indices = {
+        @Index(value = {"username"}, unique = true)
+})
 public class User {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "username")

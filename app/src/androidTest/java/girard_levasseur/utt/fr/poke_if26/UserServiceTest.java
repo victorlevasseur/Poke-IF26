@@ -17,31 +17,33 @@ import java.io.IOException;
 import java.util.List;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
+import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsername;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
+import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
+import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.tools.ImmediateSchedulersRule;
 import io.reactivex.observers.TestObserver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 /**
  * Created by victor on 24/11/17.
  */
 @RunWith(AndroidJUnit4.class)
-public class LoginServiceTest {
+public class UserServiceTest {
 
     @Rule
     public final ImmediateSchedulersRule immediateSchedulersRule = new ImmediateSchedulersRule();
 
     private PokeIF26Database db;
 
-    private LoginService loginService;
+    private UserService userService;
 
     @Before
     public void createDb() {
@@ -51,13 +53,13 @@ public class LoginServiceTest {
                 .build();
 
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("alreadyHereUsername");
         user.setPasswordHash(PasswordHasher.md5("abc"));
 
         db.userDao().insertUser(user);
 
         // Init the login service.
-        loginService = new LoginServiceImpl(db);
+        userService = new UserServiceImpl(db);
     }
 
     @After
@@ -67,22 +69,22 @@ public class LoginServiceTest {
 
 
     @Test
-    public void loginValidUser() {
+    public void registerUser() {
         TestObserver<User> observer = new TestObserver<>();
 
-        loginService.login("test", new char[]{'a', 'b', 'c'})
+        userService.registerUser("toto", new char[]{'a', 'z', 'e', 'r', 't', 'y'})
                 .subscribe(observer);
 
+        // Assert the returned User object.
         observer.assertComplete();
         List<User> returnedUser = observer.values();
         assertEquals(returnedUser.size(), 1);
-
         BaseMatcher<User> testUserMatcher = new BaseMatcher<User>() {
             @Override
             public boolean matches(Object item) {
                 if (item instanceof User) {
                     User user = (User)item;
-                    return "test".equals(user.username);
+                    return "toto".equals(user.username);
                 } else {
                     return false;
                 }
@@ -94,41 +96,20 @@ public class LoginServiceTest {
             }
         };
         assertThat(returnedUser.get(0), testUserMatcher);
-        assertThat(loginService.getConnectedUser(), testUserMatcher);
+
+        // Assert the db
+        assertThat(db.userDao().getUserByIdSync(returnedUser.get(0).getId()), testUserMatcher);
     }
 
     @Test
-    public void loginAlreadyConnectedTest() {
-        {
-            TestObserver<User> observer = new TestObserver<>();
-            loginService.login("test", new char[]{'a', 'b', 'c'})
-                    .subscribe(observer);
-            observer.assertComplete();
-        }
+    public void registerConflict() {
+        TestObserver<User> observer = new TestObserver<>();
 
-        {
-            TestObserver<User> observer = new TestObserver<>();
-            loginService.login("test", new char[]{'a', 'b', 'c'})
-                    .subscribe(observer);
-            observer.assertError(ImpossibleActionException.class);
-        }
-    }
+        userService.registerUser("alreadyHereUsername", new char[]{'a', 'z', 'e', 'r', 't', 'y'})
+                .subscribe(observer);
 
-    @Test
-    public void loginBadCredentialTest() {
-        {
-            TestObserver<User> observer = new TestObserver<>();
-            loginService.login("toto", new char[]{'a', 'b', 'c'})
-                    .subscribe(observer);
-            observer.assertError(BadCredentialsException.class);
-        }
-
-        {
-            TestObserver<User> observer = new TestObserver<>();
-            loginService.login("test", new char[]{'a', 'b', 'c', 'd'})
-                    .subscribe(observer);
-            observer.assertError(BadCredentialsException.class);
-        }
+        // Assert the returned User object.
+        observer.assertError(AlreadyExistingUsername.class);
     }
 
 }

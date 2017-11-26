@@ -27,12 +27,19 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE username = :username")
     Single<User> getUserByUsername(String username);
 
+    @Query("SELECT * FROM user WHERE id = :id")
+    Single<User> getUserById(long id);
+
     @Query("SELECT * FROM user")
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     List<User> getAllSync();
 
+    @Query("SELECT * FROM user WHERE id = :id")
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    User getUserByIdSync(long id);
+
     @Insert
-    void insertUser(User user);
+    long insertUser(User user);
 
     @Update
     void updateUser(User user);
