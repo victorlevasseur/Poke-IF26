@@ -1,6 +1,5 @@
 package girard_levasseur.utt.fr.poke_if26.activities.login;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -9,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,8 +22,8 @@ import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.activities.signup.SignUpActivity;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
-import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * A login screen that offers login via email/password.
@@ -116,32 +114,29 @@ public class LoginActivity extends AppCompatActivity {
             mLoginProgressBar.setVisibility(View.VISIBLE);
             loginService.login(username, password.toCharArray())
                     .delay(2000, TimeUnit.MILLISECONDS, true)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(loggedInUser -> {
-                        this.runOnUiThread(() -> {
-                            mLoginFormView.setVisibility(View.VISIBLE);
-                            mLoginProgressBar.setVisibility(View.GONE);
-                        });
+                        mLoginFormView.setVisibility(View.VISIBLE);
+                        mLoginProgressBar.setVisibility(View.GONE);
                         // TODO: Go to the next activity.
                     }, err -> {
                         // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
-                        this.runOnUiThread(() -> {
-                            mLoginFormView.setVisibility(View.VISIBLE);
-                            mLoginProgressBar.setVisibility(View.GONE);
-                            if (err instanceof BadCredentialsException) {
-                                // Display the login error dialog.
-                                new AlertDialog.Builder(this)
-                                        .setTitle(R.string.bad_credential_dialog_title)
-                                        .setMessage(R.string.bad_credential_dialog_message)
-                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                            dialog.dismiss();
-                                            mPasswordEditText.requestFocus();
-                                        })
-                                        .create()
-                                        .show();
-                            } else {
-                                Log.e(LoginActivity.class.getName(), "Unrecoverable exception", err);
-                            }
-                        });
+                        mLoginFormView.setVisibility(View.VISIBLE);
+                        mLoginProgressBar.setVisibility(View.GONE);
+                        if (err instanceof BadCredentialsException) {
+                            // Display the login error dialog.
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.bad_credential_dialog_title)
+                                    .setMessage(R.string.bad_credential_dialog_message)
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                        dialog.dismiss();
+                                        mPasswordEditText.requestFocus();
+                                    })
+                                    .create()
+                                    .show();
+                        } else {
+                            Log.e(LoginActivity.class.getName(), "Unrecoverable exception", err);
+                        }
                     });
         }
     }

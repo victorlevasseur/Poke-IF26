@@ -18,6 +18,7 @@ import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * A login screen that offers login via email/password.
@@ -104,32 +105,29 @@ public class SignUpActivity extends AppCompatActivity {
             mLoginFormView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.VISIBLE);
             this.userService.registerUser(username, password.toCharArray())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(newUser -> {
-                        runOnUiThread(() -> {
+                        mLoginFormView.setVisibility(View.VISIBLE);
+                        mProgressView.setVisibility(View.GONE);
+
+                        // Display the login error dialog.
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.account_created_modal_title)
+                                .setMessage(R.string.account_created_modal_message)
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                    dialog.dismiss();
+                                    NavUtils.navigateUpFromSameTask(this);
+                                })
+                                .create()
+                                .show();
+                    }, err -> {
+                        if (err instanceof AlreadyExistingUsernameException) {
                             mLoginFormView.setVisibility(View.VISIBLE);
                             mProgressView.setVisibility(View.GONE);
 
-                            // Display the login error dialog.
-                            new AlertDialog.Builder(this)
-                                    .setTitle(R.string.account_created_modal_title)
-                                    .setMessage(R.string.account_created_modal_message)
-                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                        dialog.dismiss();
-                                        NavUtils.navigateUpFromSameTask(this);
-                                    })
-                                    .create()
-                                    .show();
-                        });
-                    }, err -> {
-                        if (err instanceof AlreadyExistingUsernameException) {
-                            runOnUiThread(() -> {
-                                mLoginFormView.setVisibility(View.VISIBLE);
-                                mProgressView.setVisibility(View.GONE);
-
-                                mUsernameEditText.setError(
-                                        getString(R.string.already_existing_username_error));
-                                mUsernameEditText.requestFocus();
-                            });
+                            mUsernameEditText.setError(
+                                    getString(R.string.already_existing_username_error));
+                            mUsernameEditText.requestFocus();
                         } else {
                             Log.e(SignUpActivity.class.getName(), "Unrecoverable exception", err);
                         }
