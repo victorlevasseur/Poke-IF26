@@ -32,6 +32,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="girard_levasseur.utt.fr.poke_if26.activities.LoginActivity" />
         </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/title_activity_main"></activity>
     </application>
 
 </manifest>

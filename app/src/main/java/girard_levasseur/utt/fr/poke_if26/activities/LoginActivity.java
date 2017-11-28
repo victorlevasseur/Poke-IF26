@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     .subscribe(loggedInUser -> {
                         mLoginFormView.setVisibility(View.VISIBLE);
                         mLoginProgressBar.setVisibility(View.GONE);
-                        // TODO: Go to the next activity.
+                        startActivity(new Intent(this, MainActivity.class));
                     }, err -> {
                         // Display a dialog ON THE UI THREAD, remember that the db call has been done on another thread!
                         mLoginFormView.setVisibility(View.VISIBLE);

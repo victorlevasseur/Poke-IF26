@@ -23,4 +23,12 @@
     <string name="account_created_modal_title">Confirmation</string>
     <string name="account_created_modal_message">Votre compte a bien été créé, nous vous invitons maintenant à vous connecter.</string>
 
+    <!-- Strings related to the main activity -->
+    <string name="title_activity_main">PokéIF26</string>
+
+    <string name="title_map">Carte</string>
+    <string name="title_pokedex">Pokédex</string>
+    <string name="title_account">Mon compte</string>
+    <string name="logout_item_label">Déconnexion</string>
+
 </resources>
