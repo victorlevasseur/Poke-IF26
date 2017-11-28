@@ -1,4 +1,4 @@
-package girard_levasseur.utt.fr.poke_if26.activities.signup;
+package girard_levasseur.utt.fr.poke_if26.activities;
 
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;

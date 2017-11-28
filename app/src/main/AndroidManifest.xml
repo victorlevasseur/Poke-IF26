@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.login.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,12 +25,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.signup.SignUpActivity"
+            android:name=".activities.SignUpActivity"
             android:label="@string/sign_up_activity_title"
-            android:parentActivityName=".activities.login.LoginActivity">
+            android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="girard_levasseur.utt.fr.poke_if26.activities.login.LoginActivity" />
+                android:value="girard_levasseur.utt.fr.poke_if26.activities.LoginActivity" />
         </activity>
     </application>
 

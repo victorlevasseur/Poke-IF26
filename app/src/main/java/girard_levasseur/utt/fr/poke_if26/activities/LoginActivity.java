@@ -1,4 +1,4 @@
-package girard_levasseur.utt.fr.poke_if26.activities.login;
+package girard_levasseur.utt.fr.poke_if26.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
-import girard_levasseur.utt.fr.poke_if26.activities.signup.SignUpActivity;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
