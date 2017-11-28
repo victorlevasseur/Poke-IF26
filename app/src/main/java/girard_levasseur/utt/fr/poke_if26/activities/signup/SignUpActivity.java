@@ -1,29 +1,22 @@
 package girard_levasseur.utt.fr.poke_if26.activities.signup;
 
-import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.database.Cursor;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
-import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsername;
+import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
 
 /**
@@ -128,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     .show();
                         });
                     }, err -> {
-                        if (err instanceof AlreadyExistingUsername) {
+                        if (err instanceof AlreadyExistingUsernameException) {
                             runOnUiThread(() -> {
                                 mLoginFormView.setVisibility(View.VISIBLE);
                                 mProgressView.setVisibility(View.GONE);

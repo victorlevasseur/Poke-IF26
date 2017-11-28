@@ -5,9 +5,9 @@ package girard_levasseur.utt.fr.poke_if26.exceptions;
  *
  * Created by victor on 26/11/17.
  */
-public class AlreadyExistingUsername extends Exception {
+public class AlreadyExistingUsernameException extends Exception {
 
-    public AlreadyExistingUsername(String msg) {
+    public AlreadyExistingUsernameException(String msg) {
         super(msg);
     }
 

@@ -17,14 +17,10 @@ import java.io.IOException;
 import java.util.List;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
-import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsername;
-import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
-import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
-import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
-import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.tools.ImmediateSchedulersRule;
 import io.reactivex.observers.TestObserver;
@@ -109,7 +105,7 @@ public class UserServiceTest {
                 .subscribe(observer);
 
         // Assert the returned User object.
-        observer.assertError(AlreadyExistingUsername.class);
+        observer.assertError(AlreadyExistingUsernameException.class);
     }
 
 }

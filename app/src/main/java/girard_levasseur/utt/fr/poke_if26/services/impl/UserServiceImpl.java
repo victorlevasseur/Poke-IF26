@@ -7,7 +7,7 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
-import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsername;
+import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
             try {
                 return db.userDao().insertUser(user);
             } catch(SQLiteConstraintException e) {
-                throw new AlreadyExistingUsername(e.getMessage());
+                throw new AlreadyExistingUsernameException(e.getMessage());
             }
         }).flatMap(createdId -> db.userDao().getUserById(createdId)).subscribeOn(Schedulers.io());
     }
