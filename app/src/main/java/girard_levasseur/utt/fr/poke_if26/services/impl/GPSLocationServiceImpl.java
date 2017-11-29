@@ -53,7 +53,7 @@ public class GPSLocationServiceImpl implements GPSLocationService {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 if (locationResult.getLastLocation() != null &&
-                        locationResult.getLastLocation().getAccuracy() > 25) {
+                        locationResult.getLastLocation().getAccuracy() < 25) {
                     locationSubject.onNext(locationResult.getLastLocation());
                 }
             }

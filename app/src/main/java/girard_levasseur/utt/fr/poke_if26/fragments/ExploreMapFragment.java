@@ -5,10 +5,12 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,7 +37,7 @@ public class ExploreMapFragment extends Fragment {
     @Inject
     public GPSLocationService gpsLocationService;
 
-    private OnFragmentInteractionListener mListener;
+    private OnExploreMapFragmentInteractionListener mListener;
 
     private GoogleMap googleMap;
 
@@ -44,6 +46,10 @@ public class ExploreMapFragment extends Fragment {
     private Marker currLocationMarker = null;
 
     private Disposable gpsLocationUpdatesDisposable = null;
+
+    private ConstraintLayout tooltipConstraintLayout;
+
+    private boolean displayTooltip = false;
 
     public ExploreMapFragment() {
         // Required empty public constructor
@@ -67,6 +73,13 @@ public class ExploreMapFragment extends Fragment {
             googleMap = map;
             setupGoogleMap();
         });
+
+        tooltipConstraintLayout = v.findViewById(R.id.info_popup_layout);
+        displayAuthorizationPopup(displayTooltip);
+
+        Button tooltipAuthorizeButton = v.findViewById(R.id.info_popup_button);
+        tooltipAuthorizeButton.setOnClickListener((view) -> mListener.onAuthorizeButtonClicked());
+
         return v;
     }
 
@@ -74,8 +87,8 @@ public class ExploreMapFragment extends Fragment {
     public void onAttach(Context context) {
         AndroidInjection.inject(this);
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnExploreMapFragmentInteractionListener) {
+            mListener = (OnExploreMapFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -120,6 +133,13 @@ public class ExploreMapFragment extends Fragment {
         }
     }
 
+    public void displayAuthorizationPopup(boolean display) {
+        if (tooltipConstraintLayout != null) {
+            tooltipConstraintLayout.setVisibility(display ? View.VISIBLE : View.GONE);
+        }
+        displayTooltip = display;
+    }
+
     private void setupGoogleMap() {
 
     }
@@ -134,8 +154,9 @@ public class ExploreMapFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnExploreMapFragmentInteractionListener {
+
+        void onAuthorizeButtonClicked();
+
     }
 }

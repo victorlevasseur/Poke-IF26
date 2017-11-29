@@ -32,7 +32,9 @@ import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 
 public class MainActivity extends AppCompatActivity
-        implements HasFragmentInjector, ExploreMapFragment.OnFragmentInteractionListener, OnRequestPermissionsResultCallback {
+        implements HasFragmentInjector,
+        ExploreMapFragment.OnExploreMapFragmentInteractionListener,
+        OnRequestPermissionsResultCallback {
 
     @Inject
     public DispatchingAndroidInjector<Fragment> fragmentAndroidInjector;
@@ -107,9 +109,11 @@ public class MainActivity extends AppCompatActivity
                     grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 canGetUserLocation = true;
+                exploreMapFragment.displayAuthorizationPopup(false);
                 startLocationUpdate();
             } else {
                 canGetUserLocation = false;
+                exploreMapFragment.displayAuthorizationPopup(true);
                 // TODO: Not able to find pokemons.
             }
         }
@@ -130,16 +134,12 @@ public class MainActivity extends AppCompatActivity
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    }, 1);
             canGetUserLocation = null;
+            exploreMapFragment.displayAuthorizationPopup(true);
             // Will wait for the permissions to be accepted until going to the map fragment.
         } else {
-            // TODO: Go to the map fragment.
             canGetUserLocation = true;
+            exploreMapFragment.displayAuthorizationPopup(false);
             startLocationUpdate();
         }
     }
@@ -163,8 +163,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onAuthorizeButtonClicked() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 1);
     }
 
     private void startLocationUpdate() {
@@ -179,4 +183,5 @@ public class MainActivity extends AppCompatActivity
     private void stopLocationUpdate() {
         gpsLocationService.disableLocationUpdates();
     }
+
 }
