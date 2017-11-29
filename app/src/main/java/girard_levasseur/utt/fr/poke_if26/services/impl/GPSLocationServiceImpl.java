@@ -52,7 +52,10 @@ public class GPSLocationServiceImpl implements GPSLocationService {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                locationSubject.onNext(locationResult.getLastLocation());
+                if (locationResult.getLastLocation() != null &&
+                        locationResult.getLastLocation().getAccuracy() > 25) {
+                    locationSubject.onNext(locationResult.getLastLocation());
+                }
             }
         };
     }
@@ -78,9 +81,8 @@ public class GPSLocationServiceImpl implements GPSLocationService {
 
             fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener((location) -> {
-                        if (location != null) {
+                        if (location != null && location.getAccuracy() > 25) {
                             Log.i(toString(), "Initial position received.");
-                            Log.i(toString(), location.toString());
                             locationSubject.onNext(location);
                         }
                     });
