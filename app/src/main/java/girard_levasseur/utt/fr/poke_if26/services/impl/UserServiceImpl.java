@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import java.util.Arrays;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
@@ -17,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by victor on 26/11/17.
  */
-
+@Singleton
 public class UserServiceImpl implements UserService {
 
     private PokeIF26Database db;

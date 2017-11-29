@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Observable;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
@@ -21,6 +22,7 @@ import io.reactivex.schedulers.Schedulers;
  * Impl of the login service.
  * Created by victor on 23/11/17.
  */
+@Singleton
 public class LoginServiceImpl implements LoginService {
 
     private PokeIF26Database db;

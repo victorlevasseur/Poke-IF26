@@ -19,7 +19,12 @@ public abstract class ActivitiesBuilderModule {
     @ContributesAndroidInjector()
     abstract SignUpActivity provideSignUpActivityFactory();
 
-    @ContributesAndroidInjector()
+    // Allow the main activity to inject its main fragments.
+    @ContributesAndroidInjector(modules = {
+            MainActivityFragmentsProvider.class,
+            MainActivityServicesModule.class
+    })
+    @PerActivityScope
     abstract MainActivity provideMainActivityFactory();
 
 }
