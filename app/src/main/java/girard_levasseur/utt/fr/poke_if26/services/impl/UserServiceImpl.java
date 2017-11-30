@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         return Single.fromCallable(() -> {
             User user = new User();
             user.setUsername(username);
-            user.setPasswordHash(PasswordHasher.md5(new String(password)));
+            user.setPasswordHash(PasswordHasher.hash(new String(password)));
             erasePassword(password);
             try {
                 return db.userDao().insertUser(user);
