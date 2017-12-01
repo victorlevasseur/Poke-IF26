@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -95,8 +100,14 @@ public class ExploreMapFragment extends Fragment {
         }
 
         this.gpsLocationUpdatesDisposable =
-                gpsLocationService.getLocationUpdates()
-                        .subscribe((this::updateUserLocation));
+                Observable.combineLatest(
+                        gpsLocationService.getLocationUpdates(),
+                        gpsLocationService.getAzimutUpdates(),
+                        (location, azimut) -> Pair.create(location, azimut))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((pair) -> {
+                            updateUserLocation(pair.first, pair.second.floatValue());
+                        });
     }
 
     public void onDetach() {
@@ -107,7 +118,7 @@ public class ExploreMapFragment extends Fragment {
         super.onDetach();
     }
 
-    public void updateUserLocation(Location location) {
+    public void updateUserLocation(Location location, float azimut) {
         if (currLocationMarker != null) {
             currLocationMarker.remove();
         }
@@ -125,7 +136,7 @@ public class ExploreMapFragment extends Fragment {
                     CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(latLng)
-                                    .bearing(location.getBearing())
+                                    .bearing(azimut * 360 / (2 * (float)Math.PI))
                                     .tilt(45)
                                     .zoom(18)
                                     .build()

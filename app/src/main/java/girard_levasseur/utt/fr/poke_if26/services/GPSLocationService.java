@@ -14,4 +14,5 @@ public interface GPSLocationService {
     void disableLocationUpdates();
     Location getLastLocation();
     Observable<Location> getLocationUpdates();
+    Observable<Float> getAzimutUpdates();
 }
