@@ -141,7 +141,8 @@ public class ExploreMapFragment extends Fragment {
     }
 
     private void setupGoogleMap() {
-
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
     }
 
     /**
