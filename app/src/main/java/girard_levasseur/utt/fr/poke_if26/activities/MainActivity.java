@@ -48,25 +48,19 @@ public class MainActivity extends AppCompatActivity
     private TextView mTextMessage;
     private FrameLayout mContentFrame;
 
-    private Boolean canGetUserLocation = null;
-
     private ExploreMapFragment exploreMapFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
             case R.id.navigation_map:
-                // Create the map fragment
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, exploreMapFragment)
-                        .commit();
+                switchFragment(MainActivityFragments.EXPLORE_MAP);
                 return true;
             case R.id.navigation_pokedex:
-                // TODO: Create the Pokedex fragment
+                switchFragment(MainActivityFragments.POKEDEX);
                 return true;
             case R.id.navigation_account:
-                // TODO: Create the account fragment
+                switchFragment(MainActivityFragments.SETTINGS);
                 return true;
         }
         return false;
@@ -108,13 +102,10 @@ public class MainActivity extends AppCompatActivity
             if (grantResults.length == 2 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                canGetUserLocation = true;
                 exploreMapFragment.displayAuthorizationPopup(false);
                 startLocationUpdate();
             } else {
-                canGetUserLocation = false;
                 exploreMapFragment.displayAuthorizationPopup(true);
-                // TODO: Not able to find pokemons.
             }
         }
     }
@@ -131,14 +122,13 @@ public class MainActivity extends AppCompatActivity
         mContentFrame = findViewById(R.id.content_frame);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        switchFragment(MainActivityFragments.EXPLORE_MAP);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            canGetUserLocation = null;
             exploreMapFragment.displayAuthorizationPopup(true);
             // Will wait for the permissions to be accepted until going to the map fragment.
         } else {
-            canGetUserLocation = true;
             exploreMapFragment.displayAuthorizationPopup(false);
             startLocationUpdate();
         }
@@ -176,12 +166,29 @@ public class MainActivity extends AppCompatActivity
             gpsLocationService.enableLocationUpdates();
         } catch (GPSLocationNotAvailable gpsLocationNotAvailable) {
             gpsLocationNotAvailable.printStackTrace();
-            // TODO: Display a label
         }
     }
 
     private void stopLocationUpdate() {
         gpsLocationService.disableLocationUpdates();
+    }
+
+    private void switchFragment(MainActivityFragments fragmentType) {
+        switch (fragmentType) {
+            case EXPLORE_MAP:
+                // Create the map fragment
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, exploreMapFragment)
+                        .commit();
+                return;
+            case POKEDEX:
+                // TODO: Create the Pokedex fragment
+                return;
+            case SETTINGS:
+                // TODO: Create the account fragment
+                return;
+        }
     }
 
 }
