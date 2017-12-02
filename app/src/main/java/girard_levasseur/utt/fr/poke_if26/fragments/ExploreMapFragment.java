@@ -107,7 +107,7 @@ public class ExploreMapFragment extends Fragment {
                         // Only consider a new value if the azimut has changed by pi/16 at least.
                         gpsLocationService.getAzimutUpdates()
                                 .distinctUntilChanged((Float first, Float second) ->
-                                        Math.abs(first.floatValue() - second.floatValue()) > (float)(Math.PI / 16)),
+                                        Math.abs(first.floatValue() - second.floatValue()) < (float)(Math.PI / 16)),
                         (location, azimut) -> Pair.create(location, azimut))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((pair) -> {
@@ -134,7 +134,7 @@ public class ExploreMapFragment extends Fragment {
                     CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(latLng)
-                                    .bearing(azimut * 360 / (2 * (float)Math.PI))
+                                    //.bearing(azimut * 360 / (2 * (float)Math.PI))
                                     .tilt(45)
                                     .zoom(18)
                                     .build()
