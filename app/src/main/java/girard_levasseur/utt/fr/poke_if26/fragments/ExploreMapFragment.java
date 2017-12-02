@@ -3,10 +3,8 @@ package girard_levasseur.utt.fr.poke_if26.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +19,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -50,7 +46,9 @@ public class ExploreMapFragment extends Fragment {
 
     private Marker currLocationMarker = null;
 
-    private Disposable gpsLocationUpdatesDisposable = null;
+    private Disposable positionUpdateDisposable = null;
+
+    private Disposable cameraUpdateDisposable = null;
 
     private ConstraintLayout tooltipConstraintLayout;
 
@@ -99,39 +97,39 @@ public class ExploreMapFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
 
-        this.gpsLocationUpdatesDisposable =
+        this.positionUpdateDisposable =
+                gpsLocationService.getLocationUpdates().subscribe(this::updateUserPosition);
+
+        this.cameraUpdateDisposable =
+                // Combine the updates from the gps position and the azimut changes
                 Observable.combineLatest(
                         gpsLocationService.getLocationUpdates(),
-                        gpsLocationService.getAzimutUpdates(),
+                        // Only consider a new value if the azimut has changed by pi/16 at least.
+                        gpsLocationService.getAzimutUpdates()
+                                .distinctUntilChanged((Float first, Float second) ->
+                                        Math.abs(first.floatValue() - second.floatValue()) > (float)(Math.PI / 16)),
                         (location, azimut) -> Pair.create(location, azimut))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((pair) -> {
-                            updateUserLocation(pair.first, pair.second.floatValue());
+                            updateCameraPosition(pair.first, pair.second.floatValue());
                         });
     }
 
     public void onDetach() {
-        if (this.gpsLocationUpdatesDisposable != null) {
-            this.gpsLocationUpdatesDisposable.dispose();
+        if (this.cameraUpdateDisposable != null) {
+            this.cameraUpdateDisposable.dispose();
+        }
+        if (this.positionUpdateDisposable != null) {
+            this.positionUpdateDisposable.dispose();
         }
 
         super.onDetach();
     }
 
-    public void updateUserLocation(Location location, float azimut) {
-        if (currLocationMarker != null) {
-            currLocationMarker.remove();
-        }
-
+    public void updateCameraPosition(Location location, float azimut) {
         if (googleMap != null) {
-            Log.i(ExploreMapFragment.class.getName(), location.toString());
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Votre position");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-            currLocationMarker = googleMap.addMarker(markerOptions);
             googleMap.moveCamera(
                     CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
@@ -141,6 +139,22 @@ public class ExploreMapFragment extends Fragment {
                                     .zoom(18)
                                     .build()
                     ));
+        }
+    }
+
+    public void updateUserPosition(Location location) {
+        if (currLocationMarker != null) {
+            currLocationMarker.remove();
+        }
+
+        if (googleMap != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title("Votre position");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+            currLocationMarker = googleMap.addMarker(markerOptions);
         }
     }
 
