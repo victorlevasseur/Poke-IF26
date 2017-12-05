@@ -11,10 +11,10 @@ import dagger.Provides;
 import girard_levasseur.utt.fr.poke_if26.PokeIF26App;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
-import girard_levasseur.utt.fr.poke_if26.services.PokemonLocationsService;
+import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
-import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsServiceImpl;
+import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonsServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
 import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
 
@@ -46,8 +46,8 @@ public class PokeIF26AppModule {
 
     @Provides
     @Singleton
-    static PokemonLocationsService providePokemonLocationsService(
-            PokemonLocationsServiceImpl impl) {
+    static PokemonsService providePokemonLocationsService(
+            PokemonsServiceImpl impl) {
         return impl;
     }
 

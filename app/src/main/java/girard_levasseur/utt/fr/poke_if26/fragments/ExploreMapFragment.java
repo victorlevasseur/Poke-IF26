@@ -5,7 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
-import io.reactivex.Observable;
+import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
@@ -37,6 +37,9 @@ public class ExploreMapFragment extends Fragment {
 
     @Inject
     public GPSLocationService gpsLocationService;
+
+    @Inject
+    public PokemonsService pokemonsService;
 
     private OnExploreMapFragmentInteractionListener mListener;
 
@@ -105,6 +108,9 @@ public class ExploreMapFragment extends Fragment {
                 gpsLocationService.getLocationUpdates()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::updateCameraPosition);
+
+        pokemonsService.getAvailableFetchedPokemons()
+                .subscribe((list) -> Log.d(ExploreMapFragment.class.getCanonicalName(), "Pokemons loaded"));
     }
 
     public void onDetach() {
