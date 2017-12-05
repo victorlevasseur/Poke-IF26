@@ -9,8 +9,10 @@ import dagger.Provides;
 import girard_levasseur.utt.fr.poke_if26.PokeIF26App;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
+import girard_levasseur.utt.fr.poke_if26.services.PokemonLocationsService;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
+import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
 
 /**
@@ -36,6 +38,13 @@ public class PokeIF26AppModule {
     static LoginService provideLoginService(LoginServiceImpl impl) {
         // Return an instance of the login service impl,
         // instanciated by dagger itself to satisfy its deps.
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    static PokemonLocationsService providePokemonLocationsService(
+            PokemonLocationsServiceImpl impl) {
         return impl;
     }
 
