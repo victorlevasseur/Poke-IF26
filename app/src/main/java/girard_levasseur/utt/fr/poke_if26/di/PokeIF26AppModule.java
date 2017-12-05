@@ -4,6 +4,8 @@ import android.arch.persistence.room.Room;
 
 import javax.inject.Singleton;
 
+import me.sargunvohra.lib.pokekotlin.client.PokeApi;
+
 import dagger.Module;
 import dagger.Provides;
 import girard_levasseur.utt.fr.poke_if26.PokeIF26App;
@@ -14,6 +16,7 @@ import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.LoginServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.UserServiceImpl;
+import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
 
 /**
  * Module providing the login service.
@@ -52,6 +55,12 @@ public class PokeIF26AppModule {
     @Singleton
     static UserService provideUserService(UserServiceImpl impl) {
         return impl;
+    }
+
+    @Provides
+    @Singleton
+    static PokeApi providePokeApi() {
+        return new PokeApiClient();
     }
 
 }

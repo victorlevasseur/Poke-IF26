@@ -1,0 +1,91 @@
+package girard_levasseur.utt.fr.poke_if26.dto;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import me.sargunvohra.lib.pokekotlin.model.Pokemon;
+
+/**
+ * A PokemonInstance with the Pokemon fetched from the PokeAPI.
+ *
+ * Created by victor on 05/12/17.
+ */
+public class FetchedPokemonInstance {
+
+    private int id;
+
+    private Pokemon pokemon;
+
+    private LatLng location;
+
+    private int capturedByUserId;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Pokemon getPokemon() {
+        return pokemon;
+    }
+
+    public void setPokemon(Pokemon pokemon) {
+        this.pokemon = pokemon;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
+
+    public Integer getCapturedByUserId() {
+        return capturedByUserId;
+    }
+
+    public void setCapturedByUserId(Integer capturedByUserId) {
+        this.capturedByUserId = capturedByUserId;
+    }
+
+    private FetchedPokemonInstance(int id, Pokemon pokemon, LatLng location, int capturedByUserId) {
+        this.id = id;
+        this.pokemon = pokemon;
+        this.location = location;
+        this.capturedByUserId = capturedByUserId;
+    }
+
+    static public class Builder {
+        private int id;
+        private Pokemon pokemon;
+        private LatLng location;
+        private Integer capturedByUserId = null;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setPokemon(Pokemon pokemon) {
+            this.pokemon = pokemon;
+            return this;
+        }
+
+        public Builder setLocation(LatLng location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder setCapturedByUserId(int capturedByUserId) {
+            this.capturedByUserId = capturedByUserId;
+            return this;
+        }
+
+        public FetchedPokemonInstance build() {
+            return new FetchedPokemonInstance(id, pokemon, location, capturedByUserId);
+        }
+    }
+}

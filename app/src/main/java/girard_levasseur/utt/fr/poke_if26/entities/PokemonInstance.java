@@ -29,7 +29,7 @@ public class PokemonInstance {
     private LatLng location;
 
     @ColumnInfo(name = "captured_by_user_id")
-    private int capturedByUserId;
+    private Integer capturedByUserId;
 
     public int getId() {
         return id;
@@ -55,11 +55,11 @@ public class PokemonInstance {
         this.location = location;
     }
 
-    public int getCapturedByUserId() {
+    public Integer getCapturedByUserId() {
         return capturedByUserId;
     }
 
-    public void setCapturedByUserId(int capturedByUserId) {
+    public void setCapturedByUserId(Integer capturedByUserId) {
         this.capturedByUserId = capturedByUserId;
     }
 }
