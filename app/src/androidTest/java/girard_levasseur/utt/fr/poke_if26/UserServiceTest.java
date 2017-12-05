@@ -18,6 +18,7 @@ import java.util.List;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
+import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
@@ -50,7 +51,9 @@ public class UserServiceTest {
 
         User user = new User();
         user.setUsername("alreadyHereUsername");
-        user.setPasswordHash(PasswordHasher.md5("abc"));
+        PasswordHash hash = PasswordHasher.hash("abc", "def".getBytes());
+        user.setPasswordHash(hash.hash);
+        user.setSalt(hash.salt);
 
         db.userDao().insertUser(user);
 

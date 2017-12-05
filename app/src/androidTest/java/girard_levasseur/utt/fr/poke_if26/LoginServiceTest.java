@@ -19,6 +19,7 @@ import java.util.List;
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
@@ -52,7 +53,9 @@ public class LoginServiceTest {
 
         User user = new User();
         user.setUsername("test");
-        user.setPasswordHash(PasswordHasher.md5("abc"));
+        PasswordHash hash = PasswordHasher.hash("abc", "def".getBytes());
+        user.setPasswordHash(hash.hash);
+        user.setSalt("def");
 
         db.userDao().insertUser(user);
 

@@ -1,7 +1,7 @@
 package girard_levasseur.utt.fr.poke_if26.external;
 
 /**
- * Created by Alice on 30/11/2017.
+ * Created by Antoine on 30/11/2017.
  */
 
 public class PasswordHash {

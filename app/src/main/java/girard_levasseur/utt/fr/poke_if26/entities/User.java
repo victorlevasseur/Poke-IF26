@@ -25,6 +25,9 @@ public class User {
     @ColumnInfo(name = "password_hash")
     public String passwordHash;
 
+    @ColumnInfo(name = "salt")
+    public String salt;
+
     public User() {
         super();
     }
@@ -51,5 +54,13 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }
