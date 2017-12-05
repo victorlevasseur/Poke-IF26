@@ -17,7 +17,7 @@ public class FetchedPokemonInstance {
 
     private LatLng location;
 
-    private int capturedByUserId;
+    private Integer capturedByUserId;
 
     public int getId() {
         return id;
@@ -51,7 +51,7 @@ public class FetchedPokemonInstance {
         this.capturedByUserId = capturedByUserId;
     }
 
-    private FetchedPokemonInstance(int id, Pokemon pokemon, LatLng location, int capturedByUserId) {
+    private FetchedPokemonInstance(int id, Pokemon pokemon, LatLng location, Integer capturedByUserId) {
         this.id = id;
         this.pokemon = pokemon;
         this.location = location;
@@ -79,7 +79,7 @@ public class FetchedPokemonInstance {
             return this;
         }
 
-        public Builder setCapturedByUserId(int capturedByUserId) {
+        public Builder setCapturedByUserId(Integer capturedByUserId) {
             this.capturedByUserId = capturedByUserId;
             return this;
         }

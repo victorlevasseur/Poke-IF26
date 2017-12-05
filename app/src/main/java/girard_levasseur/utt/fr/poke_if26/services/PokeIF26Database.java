@@ -13,7 +13,7 @@ import girard_levasseur.utt.fr.poke_if26.entities.User;
 /**
  * Created by victor on 25/11/17.
  */
-@Database(entities = {PokemonInstance.class, User.class}, version = 4)
+@Database(entities = {PokemonInstance.class, User.class}, version = 6)
 @TypeConverters({LatLngConverters.class})
 public abstract class PokeIF26Database extends RoomDatabase {
 

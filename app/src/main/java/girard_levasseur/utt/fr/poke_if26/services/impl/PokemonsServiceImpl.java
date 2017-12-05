@@ -35,7 +35,7 @@ public class PokemonsServiceImpl implements PokemonsService {
 
     @Override
     public Single<FetchedPokemonInstance> fetchPokemon(PokemonInstance pokemonInstance) {
-        return Single.create(null)
+        return Single.just(new Object())
                 .observeOn(Schedulers.io())
                 .map((useless) -> new FetchedPokemonInstance.Builder()
                         .setId(pokemonInstance.getId())
@@ -58,6 +58,10 @@ public class PokemonsServiceImpl implements PokemonsService {
         return getAvailablePokemons()
                 .observeOn(Schedulers.io())
                 .flatMap((pokemons) -> {
+                    if (pokemons.size() == 0) {
+                        return Single.just(new ArrayList<FetchedPokemonInstance>());
+                    }
+
                     List<Single<FetchedPokemonInstance>> fetchedPokemonInstanceSinglesList =
                             new ArrayList<>();
                     for (Iterator<PokemonInstance> it = pokemons.iterator(); it.hasNext();) {

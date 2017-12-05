@@ -23,8 +23,8 @@ public class LatLngConverters {
         }
 
         try {
-            double lat = Double.parseDouble(parts[0]);
-            double lng = Double.parseDouble(parts[1]);
+            double lat = Double.valueOf(parts[0]);
+            double lng = Double.valueOf(parts[1]);
 
             return new LatLng(lat, lng);
         } catch (NumberFormatException ex) {
@@ -40,9 +40,9 @@ public class LatLngConverters {
         }
 
         return new StringBuilder()
-                .append(latLng.latitude)
+                .append(Double.toHexString(latLng.latitude))
                 .append(';')
-                .append(latLng.longitude)
+                .append(Double.toHexString(latLng.longitude))
                 .toString();
     }
 

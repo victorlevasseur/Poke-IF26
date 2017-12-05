@@ -3,6 +3,8 @@ package girard_levasseur.utt.fr.poke_if26.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -13,10 +15,14 @@ import com.google.android.gms.maps.model.LatLng;
  *
  * Created by victor on 05/12/17.
  */
-@Entity(foreignKeys = @ForeignKey(
-        entity = User.class,
-        parentColumns = "id",
-        childColumns = "captured_by_user_id"))
+@Entity(
+        foreignKeys = @ForeignKey(
+                entity = User.class,
+                parentColumns = "id",
+                childColumns = "captured_by_user_id"),
+        indices = {
+                @Index(value = {"lat_lng"}, unique = true)
+        })
 public class PokemonInstance {
 
     @PrimaryKey(autoGenerate = true)
@@ -29,7 +35,25 @@ public class PokemonInstance {
     private LatLng location;
 
     @ColumnInfo(name = "captured_by_user_id")
-    private Integer capturedByUserId;
+    private Integer capturedByUserId = null;
+
+    public PokemonInstance() {
+
+    }
+
+    @Ignore
+    public PokemonInstance(int pokemonId, LatLng location) {
+        this.pokemonId = pokemonId;
+        this.location = location;
+        this.capturedByUserId = null;
+    }
+
+    @Ignore
+    public PokemonInstance(int pokemonId, LatLng location, Integer capturedByUserId) {
+        this.pokemonId = pokemonId;
+        this.location = location;
+        this.capturedByUserId = capturedByUserId;
+    }
 
     public int getId() {
         return id;

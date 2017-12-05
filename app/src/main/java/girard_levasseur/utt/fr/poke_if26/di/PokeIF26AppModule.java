@@ -4,6 +4,8 @@ import android.arch.persistence.room.Room;
 
 import javax.inject.Singleton;
 
+import girard_levasseur.utt.fr.poke_if26.services.PokemonLocationsInitializerService;
+import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsInitializerServiceImpl;
 import me.sargunvohra.lib.pokekotlin.client.PokeApi;
 
 import dagger.Module;
@@ -46,8 +48,15 @@ public class PokeIF26AppModule {
 
     @Provides
     @Singleton
-    static PokemonsService providePokemonLocationsService(
+    static PokemonsService providePokemonsService(
             PokemonsServiceImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    static PokemonLocationsInitializerService providePokemonLocationsInitializerService(
+            PokemonLocationsInitializerServiceImpl impl) {
         return impl;
     }
 
