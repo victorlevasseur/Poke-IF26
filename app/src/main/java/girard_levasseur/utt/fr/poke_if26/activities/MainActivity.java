@@ -28,13 +28,15 @@ import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.exceptions.GPSLocationNotAvailable;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.fragments.ExploreMapFragment;
+import girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+import me.sargunvohra.lib.pokekotlin.model.Pokemon;
 
 public class MainActivity extends AppCompatActivity
         implements HasFragmentInjector,
         ExploreMapFragment.OnExploreMapFragmentInteractionListener,
-        OnRequestPermissionsResultCallback {
+        OnRequestPermissionsResultCallback, PokedexFragment.OnListFragmentInteractionListener {
 
     @Inject
     public DispatchingAndroidInjector<Fragment> fragmentAndroidInjector;
@@ -174,21 +176,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void switchFragment(MainActivityFragments fragmentType) {
+        FragmentManager fragmentManager = getFragmentManager();
+
         switch (fragmentType) {
             case EXPLORE_MAP:
                 // Create the map fragment
-                FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, exploreMapFragment)
                         .commit();
                 return;
             case POKEDEX:
-                // TODO: Create the Pokedex fragment
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new PokedexFragment())
+                        .commit();
                 return;
             case SETTINGS:
                 // TODO: Create the account fragment
                 return;
         }
+    }
+
+    @Override
+    public void onListFragmentInteraction(Pokemon item) {
+
     }
 
 }
