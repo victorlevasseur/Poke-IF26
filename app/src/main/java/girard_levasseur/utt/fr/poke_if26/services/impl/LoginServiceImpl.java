@@ -1,9 +1,8 @@
 package girard_levasseur.utt.fr.poke_if26.services.impl;
 
-import android.arch.persistence.room.EmptyResultSetException;
+import android.util.Log;
 
 import java.util.Arrays;
-import java.util.Observable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,9 +14,10 @@ import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
+
+import android.util.Base64;
 
 /**
  * Impl of the login service.
@@ -46,9 +46,10 @@ public class LoginServiceImpl implements LoginService {
         return this.db.userDao().getUserByUsername(username)
                 .subscribeOn(Schedulers.io()) // Run the query on the IO scheduler/thread.
                 .onErrorResumeNext(err -> // If the user is not found, throw a BadCredentialsException.
-                        Single.error(new BadCredentialsException("Login ou mot de passe incorrect.")))
+                        Single.error(new BadCredentialsException("Login ou mot de passe incorrect."))
+                )
                 .map(userWithLogin -> {
-                    PasswordHash hash = PasswordHasher.hash(new String(password), userWithLogin.salt.getBytes());
+                    PasswordHash hash = PasswordHasher.hash(new String(password), Base64.decode(userWithLogin.getSalt(), 0));
 
                     if (hash.hash.equals(userWithLogin.getPasswordHash())) {
                         this.loggedUser = userWithLogin;

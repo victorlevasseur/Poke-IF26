@@ -1,6 +1,8 @@
 package girard_levasseur.utt.fr.poke_if26.services.impl;
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.util.Base64;
+import android.util.Log;
 
 import java.util.Arrays;
 
@@ -34,7 +36,9 @@ public class UserServiceImpl implements UserService {
         return Single.fromCallable(() -> {
             User user = new User();
             user.setUsername(username);
-            PasswordHash hash = PasswordHasher.hash(new String(password), PasswordHasher.randomSalt());
+
+            byte[] salt = PasswordHasher.randomSalt();
+            PasswordHash hash = PasswordHasher.hash(new String(password), salt);
             user.setPasswordHash(hash.hash);
             user.setSalt(hash.salt);
             erasePassword(password);
