@@ -56,7 +56,7 @@ public class DummyContent {
 
     private static Pokemon createItem(int position) {
         NamedApiResource species = new NamedApiResource("Pikachu", "Species", 1);
-        PokemonSprites sprites = new PokemonSprites(null,null,null,
+        PokemonSprites sprites = new PokemonSprites(null,null,"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
                 null, null, null, null, null);
         return new Pokemon(position,
                 "Pikachu",
