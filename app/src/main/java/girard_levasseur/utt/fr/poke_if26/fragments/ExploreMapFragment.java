@@ -2,10 +2,12 @@ package girard_levasseur.utt.fr.poke_if26.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +58,8 @@ public class ExploreMapFragment extends Fragment {
     private MapFragment mapFragment;
 
     private Marker currLocationMarker = null;
+
+    private List<Pair<Marker, Circle>> pokemonMarkerAndCircleList = null;
 
     private Disposable positionUpdateDisposable = null;
 
@@ -168,22 +176,46 @@ public class ExploreMapFragment extends Fragment {
     private void setupGoogleMap() {
         googleMap.getUiSettings().setAllGesturesEnabled(false);
         googleMap.getUiSettings().setCompassEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.setTrafficEnabled(false);
+        googleMap.setOnMarkerClickListener((marker -> true)); // Disable the click and move to marker feature
     }
 
     private void updatePokemons() {
         // TODO: Clean the pokemon markers
+        if (pokemonMarkerAndCircleList != null) {
+            for (Pair<Marker, Circle> pair : pokemonMarkerAndCircleList) {
+                pair.first.remove();
+                pair.second.remove();
+            }
+            pokemonMarkerAndCircleList.clear();
+        }
+
         pokemonsService.getAvailableFetchedPokemons()
                 .subscribe(this::addPokemons);
     }
 
     private void addPokemons(List<FetchedPokemonInstance> pokemons) {
         // TODO: Store the marker refs to clean them afterwards.
+        pokemonMarkerAndCircleList = new ArrayList<>(pokemons.size());
         for (FetchedPokemonInstance instance : pokemons) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(instance.getLocation());
-            markerOptions.title(instance.getPokemon().getName());
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(instance.getPokemonImage()));
-            googleMap.addMarker(markerOptions);
+            MarkerOptions pokemonMarkerOptions = new MarkerOptions();
+            pokemonMarkerOptions.position(instance.getLocation());
+            pokemonMarkerOptions.title(instance.getPokemon().getName());
+            pokemonMarkerOptions.icon(BitmapDescriptorFactory.fromBitmap(instance.getPokemonImage()));
+
+            CircleOptions capturabilityCircleOptions = new CircleOptions()
+                    .center(instance.getLocation())
+                    .radius(10)
+                    .strokeWidth(0)
+                    .fillColor(Color.argb(128, 0, 100, 255));
+
+            googleMap.addMarker(pokemonMarkerOptions);
+            googleMap.addCircle(capturabilityCircleOptions);
+
+            pokemonMarkerAndCircleList.add(Pair.create(
+                    googleMap.addMarker(pokemonMarkerOptions),
+                    googleMap.addCircle(capturabilityCircleOptions)));
         }
     }
 

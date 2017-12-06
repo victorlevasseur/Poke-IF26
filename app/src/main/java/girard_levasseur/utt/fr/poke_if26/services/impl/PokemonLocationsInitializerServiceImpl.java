@@ -24,8 +24,8 @@ public class PokemonLocationsInitializerServiceImpl implements PokemonLocationsI
     private PokeIF26Database db;
 
     private static final PokemonInstance[] defaultPokemonInstances = new PokemonInstance[]{
-            new PokemonInstance(1, new LatLng(37.41, -122.14)),
-            new PokemonInstance(3, new LatLng(37.425, -122.09))
+            new PokemonInstance(2, new LatLng(48.269042, 4.066038)),
+            new PokemonInstance(6, new LatLng(48.269301, 4.065839))
     };
 
     @Inject
