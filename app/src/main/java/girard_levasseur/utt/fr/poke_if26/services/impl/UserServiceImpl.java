@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.AlreadyExistingUsernameException;
+import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
@@ -33,7 +34,9 @@ public class UserServiceImpl implements UserService {
         return Single.fromCallable(() -> {
             User user = new User();
             user.setUsername(username);
-            user.setPasswordHash(PasswordHasher.md5(new String(password)));
+            PasswordHash hash = PasswordHasher.hash(new String(password), PasswordHasher.randomSalt());
+            user.setPasswordHash(hash.hash);
+            user.setSalt(hash.salt);
             erasePassword(password);
             try {
                 return db.userDao().insertUser(user);

@@ -9,7 +9,7 @@ import girard_levasseur.utt.fr.poke_if26.entities.User;
 /**
  * Created by victor on 25/11/17.
  */
-@Database(entities = {User.class}, version = 2)
+@Database(entities = {User.class}, version = 3)
 public abstract class PokeIF26Database extends RoomDatabase {
 
     public abstract UserDao userDao();

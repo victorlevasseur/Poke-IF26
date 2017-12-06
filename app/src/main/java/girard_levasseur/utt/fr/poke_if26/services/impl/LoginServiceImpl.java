@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.exceptions.BadCredentialsException;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
+import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
@@ -47,8 +48,9 @@ public class LoginServiceImpl implements LoginService {
                 .onErrorResumeNext(err -> // If the user is not found, throw a BadCredentialsException.
                         Single.error(new BadCredentialsException("Login ou mot de passe incorrect.")))
                 .map(userWithLogin -> {
-                    if (PasswordHasher.md5(new String(password))
-                            .equals(userWithLogin.getPasswordHash())) {
+                    PasswordHash hash = PasswordHasher.hash(new String(password), userWithLogin.salt.getBytes());
+
+                    if (hash.hash.equals(userWithLogin.getPasswordHash())) {
                         this.loggedUser = userWithLogin;
                         return this.loggedUser;
                     } else {
