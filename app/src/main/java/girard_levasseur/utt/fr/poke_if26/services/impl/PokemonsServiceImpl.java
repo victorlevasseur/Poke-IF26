@@ -1,5 +1,11 @@
 package girard_levasseur.utt.fr.poke_if26.services.impl;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,6 +22,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import me.sargunvohra.lib.pokekotlin.client.PokeApi;
+import me.sargunvohra.lib.pokekotlin.model.Pokemon;
 
 /**
  * Created by victor on 05/12/17.
@@ -37,12 +44,27 @@ public class PokemonsServiceImpl implements PokemonsService {
     public Single<FetchedPokemonInstance> fetchPokemon(PokemonInstance pokemonInstance) {
         return Single.just(new Object())
                 .observeOn(Schedulers.io())
-                .map((useless) -> new FetchedPokemonInstance.Builder()
-                        .setId(pokemonInstance.getId())
-                        .setLocation(pokemonInstance.getLocation())
-                        .setCapturedByUserId(pokemonInstance.getCapturedByUserId())
-                        .setPokemon(pokeApi.getPokemon(pokemonInstance.getPokemonId()))
-                        .build())
+                .map((useless) -> {
+                    Pokemon pokemonData = pokeApi.getPokemon(pokemonInstance.getPokemonId());
+                    Bitmap pokemonBitmap = null;
+                    if (pokemonData.getSprites().getFrontDefault() != null) {
+                        pokemonBitmap = getBitmapFromURL(
+                                pokemonData.getSprites().getFrontDefault());
+                        pokemonBitmap = Bitmap.createScaledBitmap(
+                                pokemonBitmap,
+                                pokemonBitmap.getWidth() * 2,
+                                pokemonBitmap.getHeight() * 2,
+                                false);
+                    }
+
+                    return new FetchedPokemonInstance.Builder()
+                            .setId(pokemonInstance.getId())
+                            .setLocation(pokemonInstance.getLocation())
+                            .setCapturedByUserId(pokemonInstance.getCapturedByUserId())
+                            .setPokemon(pokemonData)
+                            .setPokemonImage(pokemonBitmap)
+                            .build();
+                })
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -77,5 +99,22 @@ public class PokemonsServiceImpl implements PokemonsService {
                                             FetchedPokemonInstance[].class)));
                 })
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // TODO: Fix exception
+            e.printStackTrace();
+            return null;
+        }
     }
 }

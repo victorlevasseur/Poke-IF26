@@ -20,10 +20,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -109,8 +113,7 @@ public class ExploreMapFragment extends Fragment {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::updateCameraPosition);
 
-        pokemonsService.getAvailableFetchedPokemons()
-                .subscribe((list) -> Log.d(ExploreMapFragment.class.getCanonicalName(), "Pokemons loaded"));
+        updatePokemons();
     }
 
     public void onDetach() {
@@ -165,6 +168,23 @@ public class ExploreMapFragment extends Fragment {
     private void setupGoogleMap() {
         googleMap.getUiSettings().setAllGesturesEnabled(false);
         googleMap.getUiSettings().setCompassEnabled(false);
+    }
+
+    private void updatePokemons() {
+        // TODO: Clean the pokemon markers
+        pokemonsService.getAvailableFetchedPokemons()
+                .subscribe(this::addPokemons);
+    }
+
+    private void addPokemons(List<FetchedPokemonInstance> pokemons) {
+        // TODO: Store the marker refs to clean them afterwards.
+        for (FetchedPokemonInstance instance : pokemons) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(instance.getLocation());
+            markerOptions.title(instance.getPokemon().getName());
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(instance.getPokemonImage()));
+            googleMap.addMarker(markerOptions);
+        }
     }
 
     /**

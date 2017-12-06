@@ -1,5 +1,7 @@
 package girard_levasseur.utt.fr.poke_if26.dto;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import me.sargunvohra.lib.pokekotlin.model.Pokemon;
@@ -14,6 +16,8 @@ public class FetchedPokemonInstance {
     private int id;
 
     private Pokemon pokemon;
+
+    private Bitmap pokemonImage;
 
     private LatLng location;
 
@@ -51,11 +55,21 @@ public class FetchedPokemonInstance {
         this.capturedByUserId = capturedByUserId;
     }
 
-    private FetchedPokemonInstance(int id, Pokemon pokemon, LatLng location, Integer capturedByUserId) {
+    public Bitmap getPokemonImage() {
+        return pokemonImage;
+    }
+
+    public void setPokemonImage(Bitmap pokemonImage) {
+        this.pokemonImage = pokemonImage;
+    }
+
+    private FetchedPokemonInstance(
+            int id, Pokemon pokemon, LatLng location, Integer capturedByUserId, Bitmap pokemonImage) {
         this.id = id;
         this.pokemon = pokemon;
         this.location = location;
         this.capturedByUserId = capturedByUserId;
+        this.pokemonImage = pokemonImage;
     }
 
     static public class Builder {
@@ -63,6 +77,7 @@ public class FetchedPokemonInstance {
         private Pokemon pokemon;
         private LatLng location;
         private Integer capturedByUserId = null;
+        private Bitmap pokemonBitmap = null;
 
         public Builder setId(int id) {
             this.id = id;
@@ -84,8 +99,14 @@ public class FetchedPokemonInstance {
             return this;
         }
 
+        public Builder setPokemonImage(Bitmap image) {
+            this.pokemonBitmap = image;
+            return this;
+        }
+
         public FetchedPokemonInstance build() {
-            return new FetchedPokemonInstance(id, pokemon, location, capturedByUserId);
+            return new FetchedPokemonInstance(
+                    id, pokemon, location, capturedByUserId, pokemonBitmap);
         }
     }
 }

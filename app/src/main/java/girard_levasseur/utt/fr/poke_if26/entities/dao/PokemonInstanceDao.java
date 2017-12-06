@@ -26,6 +26,6 @@ public interface PokemonInstanceDao {
     @Insert
     void insertPokemonInstance(PokemonInstance instance);
 
-    @Query("DELETE FROM pokemoninstance WHERE captured_by_user_id = NULL")
+    @Query("DELETE FROM pokemoninstance WHERE captured_by_user_id IS NULL")
     void deleteNotCapturedPokemons();
 }
