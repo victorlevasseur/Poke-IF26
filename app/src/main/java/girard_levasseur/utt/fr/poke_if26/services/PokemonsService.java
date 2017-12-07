@@ -4,6 +4,7 @@ import java.util.List;
 
 import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.entities.PokemonInstance;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 /**
@@ -26,6 +27,13 @@ public interface PokemonsService {
      * further operations on the UI thread.
      */
     Single<List<PokemonInstance>> getAvailablePokemons();
+
+    /**
+     * Get the available pokemons and the updates of the available pokemons.
+     * @return a flowable to a list of available pokemons. Each time the available pokemons change,
+     * the flowable emits a new value.
+     */
+    Flowable<List<PokemonInstance>> flowAvailablePokemons();
 
     /**
      * Get a list of available pokemon with their pokemon data fetched from the PokeAPI.

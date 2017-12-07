@@ -2,6 +2,7 @@ package girard_levasseur.utt.fr.poke_if26.di;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import girard_levasseur.utt.fr.poke_if26.activities.EncounterActivity;
 import girard_levasseur.utt.fr.poke_if26.activities.LoginActivity;
 import girard_levasseur.utt.fr.poke_if26.activities.MainActivity;
 import girard_levasseur.utt.fr.poke_if26.activities.SignUpActivity;
@@ -31,4 +32,6 @@ public abstract class ActivitiesBuilderModule {
     @PerActivityScope
     abstract MainActivity provideMainActivityFactory();
 
+    @ContributesAndroidInjector()
+    abstract EncounterActivity provideEncounterActivityFactory();
 }

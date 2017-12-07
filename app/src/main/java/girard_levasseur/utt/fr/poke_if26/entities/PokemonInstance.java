@@ -37,6 +37,8 @@ public class PokemonInstance {
     @ColumnInfo(name = "captured_by_user_id")
     private Integer capturedByUserId = null;
 
+    public static PokemonInstance INVALID = new PokemonInstance();
+
     public PokemonInstance() {
 
     }

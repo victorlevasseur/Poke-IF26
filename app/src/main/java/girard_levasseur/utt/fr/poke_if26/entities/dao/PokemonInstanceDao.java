@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import girard_levasseur.utt.fr.poke_if26.entities.PokemonInstance;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 /**
@@ -19,6 +20,9 @@ public interface PokemonInstanceDao {
 
     @Query("SELECT * FROM pokemoninstance WHERE captured_by_user_id IS NULL")
     Single<List<PokemonInstance>> getNotCapturedPokemons();
+
+    @Query("SELECT * FROM pokemoninstance WHERE captured_by_user_id IS NULL")
+    Flowable<List<PokemonInstance>> flowNotCapturedPokemons();
 
     @Query("SELECT * FROM pokemoninstance WHERE captured_by_user_id = :userId")
     Single<List<PokemonInstance>> getPokemonsCapturedByUser(int userId);

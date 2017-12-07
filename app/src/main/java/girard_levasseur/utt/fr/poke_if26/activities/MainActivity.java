@@ -29,8 +29,10 @@ import girard_levasseur.utt.fr.poke_if26.exceptions.GPSLocationNotAvailable;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.fragments.ExploreMapFragment;
 import girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment;
+import girard_levasseur.utt.fr.poke_if26.services.EncounterListenerService;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+import io.reactivex.disposables.Disposable;
 import me.sargunvohra.lib.pokekotlin.model.Pokemon;
 
 public class MainActivity extends AppCompatActivity
@@ -47,10 +49,12 @@ public class MainActivity extends AppCompatActivity
     @Inject
     public GPSLocationService gpsLocationService;
 
-    private TextView mTextMessage;
-    private FrameLayout mContentFrame;
+    @Inject
+    public EncounterListenerService encounterListenerService;
 
     private ExploreMapFragment exploreMapFragment;
+
+    private Disposable encounterDisposable;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -104,10 +108,14 @@ public class MainActivity extends AppCompatActivity
             if (grantResults.length == 2 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                exploreMapFragment.displayAuthorizationPopup(false);
+                if (exploreMapFragment != null) {
+                    exploreMapFragment.displayAuthorizationPopup(false);
+                }
                 startLocationUpdate();
             } else {
-                exploreMapFragment.displayAuthorizationPopup(true);
+                if (exploreMapFragment != null) {
+                    exploreMapFragment.displayAuthorizationPopup(true);
+                }
             }
         }
     }
@@ -118,22 +126,21 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        exploreMapFragment = new ExploreMapFragment();
-
-        mTextMessage = findViewById(R.id.message);
-        mContentFrame = findViewById(R.id.content_frame);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         switchFragment(MainActivityFragments.EXPLORE_MAP);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            exploreMapFragment.displayAuthorizationPopup(true);
-            // Will wait for the permissions to be accepted until going to the map fragment.
-        } else {
-            exploreMapFragment.displayAuthorizationPopup(false);
-            startLocationUpdate();
-        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        encounterDisposable = encounterListenerService.onPokemonEncountered()
+                .subscribe((pokemonInstance -> {
+                    // TODO: Pass the pokemon in the bundle
+                    startActivity(new Intent(this, EncounterActivity.class));
+                }));
     }
 
     @Override
@@ -151,6 +158,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStop() {
         stopLocationUpdate();
+        encounterDisposable.dispose();
         super.onStop();
     }
 
@@ -180,10 +188,22 @@ public class MainActivity extends AppCompatActivity
 
         switch (fragmentType) {
             case EXPLORE_MAP:
+                exploreMapFragment = new ExploreMapFragment();
+
                 // Create the map fragment
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, exploreMapFragment)
                         .commit();
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    exploreMapFragment.displayAuthorizationPopup(true);
+                    // Will wait for the permissions to be accepted until going to the map fragment.
+                } else {
+                    exploreMapFragment.displayAuthorizationPopup(false);
+                    startLocationUpdate();
+                }
+
                 return;
             case POKEDEX:
                 fragmentManager.beginTransaction()

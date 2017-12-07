@@ -4,7 +4,11 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
+import girard_levasseur.utt.fr.poke_if26.activities.EncounterActivity;
+import girard_levasseur.utt.fr.poke_if26.services.EncounterListenerService;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
+import girard_levasseur.utt.fr.poke_if26.services.impl.EncounterListenerServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.GPSLocationServiceImpl;
 
 /**
@@ -16,6 +20,13 @@ public abstract class MainActivityServicesModule {
     @Provides
     @PerActivityScope
     static GPSLocationService providesGPSLocationService(GPSLocationServiceImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @PerActivityScope
+    static EncounterListenerService provideEncounterListenerService(
+            EncounterListenerServiceImpl impl) {
         return impl;
     }
 }

@@ -18,6 +18,7 @@ import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.entities.PokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -74,6 +75,12 @@ public class PokemonsServiceImpl implements PokemonsService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Flowable<List<PokemonInstance>> flowAvailablePokemons() {
+        return db.pokemonInstanceDao().flowNotCapturedPokemons();
+    }
+
 
     @Override
     public Single<List<FetchedPokemonInstance>> getAvailableFetchedPokemons() {

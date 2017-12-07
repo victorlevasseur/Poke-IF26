@@ -4,7 +4,9 @@ import android.arch.persistence.room.Room;
 
 import javax.inject.Singleton;
 
+import girard_levasseur.utt.fr.poke_if26.services.EncounterListenerService;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonLocationsInitializerService;
+import girard_levasseur.utt.fr.poke_if26.services.impl.EncounterListenerServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsInitializerServiceImpl;
 import me.sargunvohra.lib.pokekotlin.client.PokeApi;
 
