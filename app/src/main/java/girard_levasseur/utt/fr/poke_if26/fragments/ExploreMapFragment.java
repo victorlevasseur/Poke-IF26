@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -67,6 +68,8 @@ public class ExploreMapFragment extends Fragment {
 
     private ConstraintLayout tooltipConstraintLayout;
 
+    private ProgressBar loadingProgressBar;
+
     private boolean displayTooltip = false;
 
     public ExploreMapFragment() {
@@ -91,6 +94,8 @@ public class ExploreMapFragment extends Fragment {
             googleMap = map;
             setupGoogleMap();
         });
+
+        loadingProgressBar = v.findViewById(R.id.loading_bar);
 
         tooltipConstraintLayout = v.findViewById(R.id.info_popup_layout);
         displayAuthorizationPopup(displayTooltip);
@@ -182,7 +187,10 @@ public class ExploreMapFragment extends Fragment {
     }
 
     private void updatePokemons() {
-        // TODO: Clean the pokemon markers
+        if (loadingProgressBar != null) {
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
+
         if (pokemonMarkerAndCircleList != null) {
             for (Pair<Marker, Circle> pair : pokemonMarkerAndCircleList) {
                 pair.first.remove();
@@ -196,9 +204,9 @@ public class ExploreMapFragment extends Fragment {
     }
 
     private void addPokemons(List<FetchedPokemonInstance> pokemons) {
-        // TODO: Store the marker refs to clean them afterwards.
         pokemonMarkerAndCircleList = new ArrayList<>(pokemons.size());
         for (FetchedPokemonInstance instance : pokemons) {
+            // Create the pokemon marker and its capture circle.
             MarkerOptions pokemonMarkerOptions = new MarkerOptions();
             pokemonMarkerOptions.position(instance.getLocation());
             pokemonMarkerOptions.title(instance.getPokemon().getName());
@@ -217,6 +225,8 @@ public class ExploreMapFragment extends Fragment {
                     googleMap.addMarker(pokemonMarkerOptions),
                     googleMap.addCircle(capturabilityCircleOptions)));
         }
+
+        loadingProgressBar.setVisibility(View.GONE);
     }
 
     /**

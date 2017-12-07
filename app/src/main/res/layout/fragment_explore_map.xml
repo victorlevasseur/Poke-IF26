@@ -19,14 +19,25 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/info_popup_layout" />
+            app:layout_constraintTop_toBottomOf="@id/loading_bar" />
+
+        <ProgressBar
+            android:id="@+id/loading_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintBottom_toTopOf="@+id/map_fragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/info_popup_layout" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/info_popup_layout"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/map_fragment"
+            app:layout_constraintBottom_toTopOf="@id/loading_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
