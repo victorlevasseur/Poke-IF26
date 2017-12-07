@@ -1,10 +1,14 @@
 package girard_levasseur.utt.fr.poke_if26.fragments;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment.OnListFragmentInteractionListener;
@@ -36,10 +40,18 @@ public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedex
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        String id = (new Integer(mValues.get(position).getId())).toString();
+        Pokemon pokemon = mValues.get(position);
+        holder.mItem = pokemon;
+        String id = (new Integer(pokemon.getId())).toString();
         holder.mIdView.setText(id);
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mContentView.setText(pokemon.getName());
+
+        try {
+            Picasso.with(holder.mImageView.getContext()).load(pokemon.getSprites().getFrontDefault()).into(holder.mImageView);
+        } catch (Exception e) {
+            // Pas d'image
+            Log.e("PokedexImg","No image");
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +74,7 @@ public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedex
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView mImageView;
         public Pokemon mItem;
 
         public ViewHolder(View view) {
@@ -69,6 +82,7 @@ public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedex
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id_pokemon);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mImageView = (ImageView) view.findViewById(R.id.avatar_imageview);
         }
 
         @Override
