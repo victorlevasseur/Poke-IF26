@@ -5,8 +5,10 @@ import android.arch.persistence.room.Room;
 import javax.inject.Singleton;
 
 import girard_levasseur.utt.fr.poke_if26.services.EncounterListenerService;
+import girard_levasseur.utt.fr.poke_if26.services.PokedexService;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonLocationsInitializerService;
 import girard_levasseur.utt.fr.poke_if26.services.impl.EncounterListenerServiceImpl;
+import girard_levasseur.utt.fr.poke_if26.services.impl.PokedexServiceImpl;
 import girard_levasseur.utt.fr.poke_if26.services.impl.PokemonLocationsInitializerServiceImpl;
 import me.sargunvohra.lib.pokekotlin.client.PokeApi;
 
@@ -74,4 +76,7 @@ public class PokeIF26AppModule {
         return new PokeApiClient();
     }
 
+    @Provides
+    @Singleton
+    static PokedexService providePokedexservice(PokedexServiceImpl impl) { return impl; }
 }

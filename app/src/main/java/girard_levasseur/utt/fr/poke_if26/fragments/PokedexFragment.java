@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.fragments.dummy.DummyContent;
+import girard_levasseur.utt.fr.poke_if26.services.PokedexService;
 import me.sargunvohra.lib.pokekotlin.model.Pokemon;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A fragment representing a list of Items.
@@ -24,6 +28,9 @@ import java.util.List;
  * interface.
  */
 public class PokedexFragment extends Fragment {
+
+    @Inject
+    public PokedexService pokedexService;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -71,7 +78,7 @@ public class PokedexFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyPokedexRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyPokedexRecyclerViewAdapter(pokedexService.getCapturedFetchedPokemonInstances(), mListener));
         }
         return view;
     }
@@ -108,6 +115,6 @@ public class PokedexFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Pokemon item);
+        void onListFragmentInteraction(FetchedPokemonInstance item);
     }
 }
