@@ -25,6 +25,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasFragmentInjector;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.exceptions.GPSLocationNotAvailable;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.fragments.ExploreMapFragment;
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Pokemon item) {
+    public void onListFragmentInteraction(FetchedPokemonInstance item) {
 
     }
 
