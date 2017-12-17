@@ -1,5 +1,6 @@
 package girard_levasseur.utt.fr.poke_if26.services.impl;
 
+import android.arch.persistence.room.EmptyResultSetException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -10,12 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.entities.PokemonInstance;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import io.reactivex.Flowable;
@@ -39,6 +43,46 @@ public class PokemonsServiceImpl implements PokemonsService {
     public PokemonsServiceImpl(PokeApi pokeApi, PokeIF26Database db) {
         this.pokeApi = pokeApi;
         this.db = db;
+    }
+
+    @Override
+    public Single<Optional<PokemonInstance>> getPokemonInstanceById(int id) {
+        return db.pokemonInstanceDao().getPokemonInstance(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(Optional::of)
+                .onErrorResumeNext((e) -> {
+                    if (e instanceof EmptyResultSetException) {
+                        return Single.just(Optional.empty());
+                    } else {
+                        return Single.error(e);
+                    }
+                });
+    }
+
+    @Override
+    public Single<Optional<FetchedPokemonInstance>> getFetchedPokemonInstanceById(int id) {
+        return getPokemonInstanceById(id)
+                .flatMap((pokemonInstance -> {
+                    if (pokemonInstance.isPresent()) {
+                        return fetchPokemon(pokemonInstance.get())
+                                .map(Optional::of);
+                    } else {
+                        return Single.just(Optional.empty());
+                    }
+                }));
+    }
+
+    @Override
+    public Single<List<PokemonInstance>> getAvailablePokemons() {
+        return db.pokemonInstanceDao().getNotCapturedPokemons()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Flowable<List<PokemonInstance>> flowAvailablePokemons() {
+        return db.pokemonInstanceDao().flowNotCapturedPokemons();
     }
 
     @Override
@@ -70,19 +114,6 @@ public class PokemonsServiceImpl implements PokemonsService {
     }
 
     @Override
-    public Single<List<PokemonInstance>> getAvailablePokemons() {
-        return db.pokemonInstanceDao().getNotCapturedPokemons()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
-    public Flowable<List<PokemonInstance>> flowAvailablePokemons() {
-        return db.pokemonInstanceDao().flowNotCapturedPokemons();
-    }
-
-
-    @Override
     public Single<List<FetchedPokemonInstance>> getAvailableFetchedPokemons() {
         return getAvailablePokemons()
                 .observeOn(Schedulers.io())
@@ -106,6 +137,23 @@ public class PokemonsServiceImpl implements PokemonsService {
                                             FetchedPokemonInstance[].class)));
                 })
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Single<Boolean> capturePokemonById(int pokemonId, User byUser) {
+        return getPokemonInstanceById(pokemonId)
+                .flatMap((pokemonInstanceOptional) -> {
+                    if (pokemonInstanceOptional.isPresent()) {
+                        pokemonInstanceOptional.get().setCapturedByUserId(byUser.getId());
+                        return Single.<Boolean>create((single) -> {
+                            db.pokemonInstanceDao().updatePokemonInstance(pokemonInstanceOptional.get());
+                            single.onSuccess(Boolean.TRUE);
+                        }).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    } else {
+                        return Single.just(Boolean.FALSE);
+                    }
+                });
     }
 
     private Bitmap getBitmapFromURL(String src) {

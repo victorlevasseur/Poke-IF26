@@ -1,9 +1,13 @@
 package girard_levasseur.utt.fr.poke_if26.services;
 
+import android.view.KeyCharacterMap;
+
 import java.util.List;
+import java.util.Optional;
 
 import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.entities.PokemonInstance;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -14,12 +18,18 @@ import io.reactivex.Single;
 public interface PokemonsService {
 
     /**
-     * Fetch a single pokemon from the API.
-     * @param pokemonInstance the pokemon instance to fetch
-     * @return an observable to the fetched pokemon instance. The observable will do
-     * further operations on the UI thread.
+     * Get a pokemon instance by its instance ID.
+     * @param id the id
+     * @return a single that emits an optional PokemonInstance.
      */
-    Single<FetchedPokemonInstance> fetchPokemon(PokemonInstance pokemonInstance);
+    Single<Optional<PokemonInstance>> getPokemonInstanceById(int id);
+
+    /**
+     * Get a fetched pokemon instance by its instance ID.
+     * @param id the id
+     * @return a single that emits an optional PokemonInstance.
+     */
+    Single<Optional<FetchedPokemonInstance>> getFetchedPokemonInstanceById(int id);
 
     /**
      * Get the available pokemons.
@@ -36,11 +46,27 @@ public interface PokemonsService {
     Flowable<List<PokemonInstance>> flowAvailablePokemons();
 
     /**
+     * Fetch a single pokemon from the API.
+     * @param pokemonInstance the pokemon instance to fetch
+     * @return an observable to the fetched pokemon instance. The observable will do
+     * further operations on the UI thread.
+     */
+    Single<FetchedPokemonInstance> fetchPokemon(PokemonInstance pokemonInstance);
+
+    /**
      * Get a list of available pokemon with their pokemon data fetched from the PokeAPI.
      *
      * @return a single observable to a list of fetched pokemon instances. The observable will do
      * further operations on the UI thread.
      */
     Single<List<FetchedPokemonInstance>> getAvailableFetchedPokemons();
+
+    /**
+     * Try to capture a pokemon.
+     * @param pokemonId the pokemon instance id
+     * @param byUser the user that captured the pokemon
+     * @return a single observable to a boolean telling if the capture succeeded or not.
+     */
+    Single<Boolean> capturePokemonById(int pokemonId, User byUser);
 
 }

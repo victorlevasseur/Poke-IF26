@@ -3,6 +3,7 @@ package girard_levasseur.utt.fr.poke_if26.entities.dao;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -27,8 +28,14 @@ public interface PokemonInstanceDao {
     @Query("SELECT * FROM pokemoninstance WHERE captured_by_user_id = :userId")
     Single<List<PokemonInstance>> getPokemonsCapturedByUser(int userId);
 
+    @Query("SELECT * FROM pokemoninstance WHERE id = :id")
+    Single<PokemonInstance> getPokemonInstance(int id);
+
     @Insert
     void insertPokemonInstance(PokemonInstance instance);
+
+    @Update
+    void updatePokemonInstance(PokemonInstance instance);
 
     @Query("DELETE FROM pokemoninstance WHERE captured_by_user_id IS NULL")
     void deleteNotCapturedPokemons();

@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,8 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -136,29 +133,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        encounterDisposable = encounterListenerService.onPokemonEncountered()
-                .subscribe((pokemonInstance -> {
-                    // TODO: Pass the pokemon in the bundle
-                    startActivity(new Intent(this, EncounterActivity.class));
-                }));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        encounterDisposable = encounterListenerService.onPokemonEncountered()
+                .subscribe((pokemonInstance -> {
+                    Intent intent = new Intent(this, EncounterActivity.class);
+                    intent.putExtra(EncounterActivity.POKEMON_INSTANCE_ID, pokemonInstance.getId());
+                    startActivity(intent);
+                }));
         startLocationUpdate();
     }
 
     @Override
     public void onPause() {
         stopLocationUpdate();
+        encounterDisposable.dispose();
         super.onPause();
     }
 
     @Override
     public void onStop() {
         stopLocationUpdate();
-        encounterDisposable.dispose();
         super.onStop();
     }
 

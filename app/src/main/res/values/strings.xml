@@ -35,4 +35,8 @@
     <string name="map_permission_requested_tooltip">Veuillez nous autoriser à connaître votre position...</string>
     <string name="autorize_location_button_label">Autoriser...</string>
 
+    <!-- Strings related to the encounter activity -->
+    <string name="capture_button_label">Capturer</string>
+    <string name="unavailable_pokemon_label">Le pokémon est indisponible. Êtes-vous connecté à Internet ?</string>
+
 </resources>
