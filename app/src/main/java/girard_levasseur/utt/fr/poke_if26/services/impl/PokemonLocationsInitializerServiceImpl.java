@@ -25,7 +25,8 @@ public class PokemonLocationsInitializerServiceImpl implements PokemonLocationsI
 
     private static final PokemonInstance[] defaultPokemonInstances = new PokemonInstance[]{
             new PokemonInstance(2, new LatLng(48.269042, 4.066038)),
-            new PokemonInstance(6, new LatLng(48.269301, 4.065839))
+            new PokemonInstance(6, new LatLng(48.269301, 4.065839)),
+            new PokemonInstance(8, new LatLng(48.105809, 5.130293))
     };
 
     @Inject
@@ -46,6 +47,10 @@ public class PokemonLocationsInitializerServiceImpl implements PokemonLocationsI
                 PokemonInstance instance = defaultPokemonInstances[i];
                 try {
                     db.pokemonInstanceDao().insertPokemonInstance(instance);
+                    Log.i(PokemonLocationsInitializerServiceImpl.class.getName(),
+                            "PokemonInstance at " +
+                                    instance.getLocation().toString() +
+                                    " added.");
                 } catch (SQLiteConstraintException e) {
                     // Just print a log message but ignore the "error".
                     Log.i(PokemonLocationsInitializerServiceImpl.class.getName(),
