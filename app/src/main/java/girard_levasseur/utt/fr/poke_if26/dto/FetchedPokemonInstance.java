@@ -21,6 +21,8 @@ public class FetchedPokemonInstance {
 
     private LatLng location;
 
+    private float capturability;
+
     private Integer capturedByUserId;
 
     public int getId() {
@@ -47,6 +49,14 @@ public class FetchedPokemonInstance {
         this.location = location;
     }
 
+    public float getCapturability() {
+        return capturability;
+    }
+
+    public void setCapturability(float capturability) {
+        this.capturability = capturability;
+    }
+
     public Integer getCapturedByUserId() {
         return capturedByUserId;
     }
@@ -64,10 +74,11 @@ public class FetchedPokemonInstance {
     }
 
     private FetchedPokemonInstance(
-            int id, Pokemon pokemon, LatLng location, Integer capturedByUserId, Bitmap pokemonImage) {
+            int id, Pokemon pokemon, LatLng location, float capturability, Integer capturedByUserId, Bitmap pokemonImage) {
         this.id = id;
         this.pokemon = pokemon;
         this.location = location;
+        this.capturability = capturability;
         this.capturedByUserId = capturedByUserId;
         this.pokemonImage = pokemonImage;
     }
@@ -76,6 +87,7 @@ public class FetchedPokemonInstance {
         private int id;
         private Pokemon pokemon;
         private LatLng location;
+        private float capturability;
         private Integer capturedByUserId = null;
         private Bitmap pokemonBitmap = null;
 
@@ -104,9 +116,14 @@ public class FetchedPokemonInstance {
             return this;
         }
 
+        public Builder setCapturability(float capturability) {
+            this.capturability = capturability;
+            return this;
+        }
+
         public FetchedPokemonInstance build() {
             return new FetchedPokemonInstance(
-                    id, pokemon, location, capturedByUserId, pokemonBitmap);
+                    id, pokemon, location, capturability, capturedByUserId, pokemonBitmap);
         }
     }
 }

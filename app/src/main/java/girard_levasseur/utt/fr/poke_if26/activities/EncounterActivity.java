@@ -36,6 +36,8 @@ public class EncounterActivity extends AppCompatActivity {
 
     private TextView pokemonNameTextView;
 
+    private ProgressBar difficultyProgressBar;
+
     private Button captureButton;
 
     private ProgressBar loadingProgressBar;
@@ -50,6 +52,7 @@ public class EncounterActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         pokemonNameTextView = findViewById(R.id.pokemonNameLabel);
+        difficultyProgressBar = findViewById(R.id.difficultyProgressBar);
         captureButton = findViewById(R.id.captureButton);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
     }
@@ -69,6 +72,11 @@ public class EncounterActivity extends AppCompatActivity {
                         imageView.setImageBitmap(pokemon.get().getPokemonImage());
                         imageView.setVisibility(View.VISIBLE);
                         pokemonNameTextView.setText(pokemon.get().getPokemon().getName());
+
+                        difficultyProgressBar.setProgress(
+                                100 - (int)(pokemon.get().getCapturability() * 100.f));
+                        difficultyProgressBar.setVisibility(View.VISIBLE);
+
                         captureButton.setVisibility(View.VISIBLE);
                     } else {
                         pokemonNameTextView.setText(R.string.unavailable_pokemon_label);

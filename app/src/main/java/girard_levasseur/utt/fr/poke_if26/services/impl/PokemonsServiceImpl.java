@@ -105,6 +105,7 @@ public class PokemonsServiceImpl implements PokemonsService {
                     return new FetchedPokemonInstance.Builder()
                             .setId(pokemonInstance.getId())
                             .setLocation(pokemonInstance.getLocation())
+                            .setCapturability(pokemonInstance.getCapturability())
                             .setCapturedByUserId(pokemonInstance.getCapturedByUserId())
                             .setPokemon(pokemonData)
                             .setPokemonImage(pokemonBitmap)
@@ -144,12 +145,16 @@ public class PokemonsServiceImpl implements PokemonsService {
         return getPokemonInstanceById(pokemonId)
                 .flatMap((pokemonInstanceOptional) -> {
                     if (pokemonInstanceOptional.isPresent()) {
-                        pokemonInstanceOptional.get().setCapturedByUserId(byUser.getId());
-                        return Single.<Boolean>create((single) -> {
-                            db.pokemonInstanceDao().updatePokemonInstance(pokemonInstanceOptional.get());
-                            single.onSuccess(Boolean.TRUE);
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        if (Math.random() <= pokemonInstanceOptional.get().getCapturability()) {
+                            pokemonInstanceOptional.get().setCapturedByUserId(byUser.getId());
+                            return Single.<Boolean>create((single) -> {
+                                db.pokemonInstanceDao().updatePokemonInstance(pokemonInstanceOptional.get());
+                                single.onSuccess(Boolean.TRUE);
+                            }).subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread());
+                        } else {
+                            return Single.just(Boolean.FALSE);
+                        }
                     } else {
                         return Single.just(Boolean.FALSE);
                     }

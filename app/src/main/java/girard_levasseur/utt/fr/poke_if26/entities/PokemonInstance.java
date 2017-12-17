@@ -34,6 +34,9 @@ public class PokemonInstance {
     @ColumnInfo(name = "lat_lng")
     private LatLng location;
 
+    @ColumnInfo(name = "capturability")
+    private float capturability;
+
     @ColumnInfo(name = "captured_by_user_id")
     private Integer capturedByUserId = null;
 
@@ -44,16 +47,18 @@ public class PokemonInstance {
     }
 
     @Ignore
-    public PokemonInstance(int pokemonId, LatLng location) {
+    public PokemonInstance(int pokemonId, LatLng location, float capturability) {
         this.pokemonId = pokemonId;
         this.location = location;
+        this.capturability = capturability;
         this.capturedByUserId = null;
     }
 
     @Ignore
-    public PokemonInstance(int pokemonId, LatLng location, Integer capturedByUserId) {
+    public PokemonInstance(int pokemonId, LatLng location, float capturability, Integer capturedByUserId) {
         this.pokemonId = pokemonId;
         this.location = location;
+        this.capturability = capturability;
         this.capturedByUserId = capturedByUserId;
     }
 
@@ -79,6 +84,14 @@ public class PokemonInstance {
 
     public void setLocation(LatLng location) {
         this.location = location;
+    }
+
+    public float getCapturability() {
+        return capturability;
+    }
+
+    public void setCapturability(float capturability) {
+        this.capturability = capturability;
     }
 
     public Integer getCapturedByUserId() {
