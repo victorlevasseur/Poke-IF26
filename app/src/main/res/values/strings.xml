@@ -38,5 +38,9 @@
     <!-- Strings related to the encounter activity -->
     <string name="capture_button_label">Capturer</string>
     <string name="unavailable_pokemon_label">Le pokémon est indisponible. Êtes-vous connecté à Internet ?</string>
+    <string name="capture_success_title">Succès !</string>
+    <string name="capture_success_label">Bravo ! Le pokemon a bien été capturé et a été ajouté dans votre Pokédex.</string>
+    <string name="capture_failed_title">Dommage</string>
+    <string name="capture_failed_label">La capture du Pokémon a échoué, essayer une autre fois…</string>
 
 </resources>

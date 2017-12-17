@@ -1,6 +1,8 @@
 package girard_levasseur.utt.fr.poke_if26.activities;
 
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -78,10 +80,32 @@ public class EncounterActivity extends AppCompatActivity {
 
         captureButton.setOnClickListener((view) -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
+            captureButton.setEnabled(false);
             pokemonsService.capturePokemonById(pokemonInstanceId, loginService.getConnectedUser())
                     .subscribe((result) -> {
                         // TODO: Implement result depend callback
-                        startActivity(new Intent(this, MainActivity.class));
+                        if (result) {
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.capture_success_title)
+                                    .setMessage(R.string.capture_success_label)
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                        dialog.dismiss();
+                                        startActivity(new Intent(this, MainActivity.class));
+                                    })
+                                    .create()
+                                    .show();
+                        } else {
+                            loadingProgressBar.setVisibility(View.GONE);
+                            captureButton.setEnabled(true);
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.capture_failed_title)
+                                    .setMessage(R.string.capture_failed_label)
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                        dialog.dismiss();
+                                    })
+                                    .create()
+                                    .show();
+                        }
                     });
         });
     }
