@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
         }).flatMap(createdId -> db.userDao().getUserById(createdId)).subscribeOn(Schedulers.io());
     }
 
-
     private void erasePassword(char[] password) {
         Arrays.fill(password, '*');
     }

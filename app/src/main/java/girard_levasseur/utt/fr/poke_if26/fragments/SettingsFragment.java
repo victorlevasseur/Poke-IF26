@@ -35,7 +35,11 @@ public class SettingsFragment extends Fragment {
         menuListView = v.findViewById(R.id.settingsListView);
         menuListView.setOnItemClickListener((adapter, view, index, id) -> {
             if (index == SettingsItems.CHANGE_PASSWORD_ITEM.getIndex()) {
+                ChangePasswordDialogFragment modal = ChangePasswordDialogFragment.newInstance();
+                modal.setPasswordListener((newPassword) -> {
 
+                });
+                modal.show(getFragmentManager(), "change_password_dialog_fragment");
             } else if (index == SettingsItems.CHANGE_LOGIN_ITEM.getIndex()) {
 
             } else if (index == SettingsItems.DELETE_ACCOUNT.getIndex()) {

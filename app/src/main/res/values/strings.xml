@@ -50,4 +50,7 @@
         <item>Supprimer le compte</item>
     </string-array>
 
+    <!-- Strings related to the password change dialog fragment -->
+    <string name="change_password_dialog_title">Changement de mot de passe</string>
+
 </resources>
