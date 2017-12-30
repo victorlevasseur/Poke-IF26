@@ -1,0 +1,12 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="girard_levasseur.utt.fr.poke_if26.fragments.SettingsFragment">
+    <ListView
+        android:id="@+id/settingsListView"
+        style="@style/Widget.AppCompat.ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:entries="@array/settings_items" />
+</FrameLayout>

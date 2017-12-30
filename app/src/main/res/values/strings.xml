@@ -32,8 +32,8 @@
     <string name="logout_item_label">Déconnexion</string>
 
     <!-- Strings related to the explore map fragment -->
-    <string name="map_permission_requested_tooltip">Veuillez nous autoriser à connaître votre position...</string>
-    <string name="autorize_location_button_label">Autoriser...</string>
+    <string name="map_permission_requested_tooltip">Veuillez nous autoriser à connaître votre position…</string>
+    <string name="autorize_location_button_label">Autoriser…</string>
 
     <!-- Strings related to the encounter activity -->
     <string name="capture_button_label">Capturer</string>
@@ -42,5 +42,12 @@
     <string name="capture_success_label">Bravo ! Le pokemon a bien été capturé et a été ajouté dans votre Pokédex.</string>
     <string name="capture_failed_title">Dommage</string>
     <string name="capture_failed_label">La capture du Pokémon a échoué, essayer une autre fois…</string>
+
+    <!-- Strings related to the settings fragment -->
+    <string-array name="settings_items">
+        <item>Changer de mot de passe</item>
+        <item>Changer d\'identifiant</item>
+        <item>Supprimer le compte</item>
+    </string-array>
 
 </resources>

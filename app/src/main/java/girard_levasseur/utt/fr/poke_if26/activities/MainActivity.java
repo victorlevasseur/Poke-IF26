@@ -26,6 +26,7 @@ import girard_levasseur.utt.fr.poke_if26.exceptions.GPSLocationNotAvailable;
 import girard_levasseur.utt.fr.poke_if26.exceptions.ImpossibleActionException;
 import girard_levasseur.utt.fr.poke_if26.fragments.ExploreMapFragment;
 import girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment;
+import girard_levasseur.utt.fr.poke_if26.fragments.SettingsFragment;
 import girard_levasseur.utt.fr.poke_if26.services.EncounterListenerService;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
@@ -209,7 +210,9 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 return;
             case SETTINGS:
-                // TODO: Create the account fragment
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new SettingsFragment())
+                        .commit();
                 return;
         }
     }
