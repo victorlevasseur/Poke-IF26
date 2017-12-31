@@ -1,20 +1,35 @@
 package girard_levasseur.utt.fr.poke_if26.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+import girard_levasseur.utt.fr.poke_if26.services.UserService;
 
 /**
  * The settings page fragment
  */
 public class SettingsFragment extends Fragment {
+
+    @Inject
+    public LoginService loginService;
+
+    @Inject
+    public UserService userService;
 
     private ListView menuListView;
 
@@ -37,7 +52,10 @@ public class SettingsFragment extends Fragment {
             if (index == SettingsItems.CHANGE_PASSWORD_ITEM.getIndex()) {
                 ChangePasswordDialogFragment modal = ChangePasswordDialogFragment.newInstance();
                 modal.setPasswordListener((newPassword) -> {
-
+                    return userService.changeUserPassword(
+                            loginService.getConnectedUser(),
+                            newPassword.toCharArray())
+                            .delay(500, TimeUnit.MILLISECONDS);
                 });
                 modal.show(getFragmentManager(), "change_password_dialog_fragment");
             } else if (index == SettingsItems.CHANGE_LOGIN_ITEM.getIndex()) {
@@ -51,6 +69,13 @@ public class SettingsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return v;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AndroidInjection.inject(this);
+
+        super.onAttach(context);
     }
 
 }

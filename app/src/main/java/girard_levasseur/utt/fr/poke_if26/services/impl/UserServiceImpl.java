@@ -15,7 +15,9 @@ import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
+import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -37,8 +39,7 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setUsername(username);
 
-            byte[] salt = PasswordHasher.randomSalt();
-            PasswordHash hash = PasswordHasher.hash(new String(password), salt);
+            PasswordHash hash = hashPassword(password);
             user.setPasswordHash(hash.hash);
             user.setSalt(hash.salt);
             erasePassword(password);
@@ -47,7 +48,26 @@ public class UserServiceImpl implements UserService {
             } catch(SQLiteConstraintException e) {
                 throw new AlreadyExistingUsernameException(e.getMessage());
             }
-        }).flatMap(createdId -> db.userDao().getUserById(createdId)).subscribeOn(Schedulers.io());
+        }).flatMap(createdId -> db.userDao().getUserById(createdId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Completable changeUserPassword(User user, char[] newPassword) {
+        return Completable.fromCallable(() -> {
+            PasswordHash newPasswordHashed = hashPassword(newPassword);
+            user.passwordHash = newPasswordHashed.hash;
+            user.salt = newPasswordHashed.salt;
+            db.userDao().updateUser(user);
+            erasePassword(newPassword);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private PasswordHash hashPassword(char[] password) {
+        byte[] salt = PasswordHasher.randomSalt();
+        return PasswordHasher.hash(new String(password), salt);
     }
 
     private void erasePassword(char[] password) {

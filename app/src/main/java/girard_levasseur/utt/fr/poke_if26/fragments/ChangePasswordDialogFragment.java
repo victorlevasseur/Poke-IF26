@@ -7,8 +7,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import girard_levasseur.utt.fr.poke_if26.R;
+import io.reactivex.Completable;
 
 /**
  * A dialog fragment to let the user type a new password.
@@ -17,6 +19,8 @@ public class ChangePasswordDialogFragment extends DialogFragment {
 
     private EditText passwordEditText;
     private EditText passwordConfirmationEditText;
+    private ProgressBar progressBar;
+
     private PasswordListener passwordListener = null;
 
     public ChangePasswordDialogFragment() {
@@ -48,6 +52,7 @@ public class ChangePasswordDialogFragment extends DialogFragment {
 
         passwordEditText = dialogView.findViewById(R.id.newPasswordEditText);
         passwordConfirmationEditText = dialogView.findViewById(R.id.newPasswordConfirmationEditText);
+        progressBar = dialogView.findViewById(R.id.progressBar);
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
@@ -91,9 +96,16 @@ public class ChangePasswordDialogFragment extends DialogFragment {
                     }
 
                     if (passwordListener != null) {
-                        passwordListener.onNewPasswordSelected(passwordEditText.getText().toString());
+                        // Display the loading spinner and call the password listener method
+                        // waiting for its returned completable to complete.
+                        showSpinner(true);
+                        passwordListener.onNewPasswordSelected(passwordEditText.getText().toString())
+                                .subscribe(() -> {
+                                    dialog.dismiss();
+                                });
+                    } else {
+                        dialog.dismiss();
                     }
-                    dialog.dismiss();
                 });
     }
 
@@ -102,7 +114,13 @@ public class ChangePasswordDialogFragment extends DialogFragment {
     }
 
     public interface PasswordListener {
-        void onNewPasswordSelected(String password);
+        Completable onNewPasswordSelected(String password);
+    }
+
+    private void showSpinner(boolean show) {
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        passwordEditText.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+        passwordConfirmationEditText.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
     }
 
 }

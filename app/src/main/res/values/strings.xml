@@ -52,5 +52,7 @@
 
     <!-- Strings related to the password change dialog fragment -->
     <string name="change_password_dialog_title">Changement de mot de passe</string>
+    <string name="change_password_confirmation_title">Confirmation</string>
+    <string name="change_password_confirmation_message">Votre mot de passe a bien été changé.</string>
 
 </resources>
