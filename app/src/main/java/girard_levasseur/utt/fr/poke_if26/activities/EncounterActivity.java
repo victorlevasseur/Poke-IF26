@@ -91,7 +91,6 @@ public class EncounterActivity extends AppCompatActivity {
             captureButton.setEnabled(false);
             pokemonsService.capturePokemonById(pokemonInstanceId, loginService.getConnectedUser())
                     .subscribe((result) -> {
-                        // TODO: Implement result depend callback
                         if (result) {
                             new AlertDialog.Builder(this)
                                     .setTitle(R.string.capture_success_title)

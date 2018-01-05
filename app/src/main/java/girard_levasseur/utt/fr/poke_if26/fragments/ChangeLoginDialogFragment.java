@@ -77,9 +77,8 @@ public class ChangeLoginDialogFragment extends DialogFragment {
                 .setOnClickListener((view) -> {
                     loginEditText.setError(null);
 
-                    // Check password length
+                    // Check username length
                     if (loginEditText.getText().toString().isEmpty()) {
-                        // TODO: Text message
                         loginEditText
                                 .setError(getString(R.string.invalid_username_error));
                         return;
