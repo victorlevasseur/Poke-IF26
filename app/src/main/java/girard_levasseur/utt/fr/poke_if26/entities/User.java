@@ -14,7 +14,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(indices = {
         @Index(value = {"username"}, unique = true)
 })
-public class User {
+public class User implements Cloneable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -30,6 +30,11 @@ public class User {
 
     public User() {
         super();
+    }
+
+    @Override
+    public User clone() throws CloneNotSupportedException {
+        return (User)super.clone();
     }
 
     public int getId() {

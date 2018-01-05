@@ -54,12 +54,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Completable changeUserLogin(User user, String newLogin) {
+        return Completable.fromCallable(() -> {
+            User userWithNewLogin = user.clone();
+            userWithNewLogin.setUsername(newLogin);
+            try {
+                db.userDao().updateUser(userWithNewLogin);
+                return true;
+            } catch(SQLiteConstraintException e) {
+                throw new AlreadyExistingUsernameException(e.getMessage());
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Completable changeUserPassword(User user, char[] newPassword) {
         return Completable.fromCallable(() -> {
             PasswordHash newPasswordHashed = hashPassword(newPassword);
-            user.passwordHash = newPasswordHashed.hash;
-            user.salt = newPasswordHashed.salt;
-            db.userDao().updateUser(user);
+            User userWithChangedPassword = user.clone();
+            userWithChangedPassword.passwordHash = newPasswordHashed.hash;
+            userWithChangedPassword.salt = newPasswordHashed.salt;
+            db.userDao().updateUser(userWithChangedPassword);
             erasePassword(newPassword);
             return true;
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

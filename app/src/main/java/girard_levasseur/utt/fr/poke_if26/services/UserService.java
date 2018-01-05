@@ -22,6 +22,18 @@ public interface UserService {
     Single<User> registerUser(String username, char[] password);
 
     /**
+     * Change an user login.
+     * @param user the user
+     * @param newLogin the new login
+     * @return a completable that notifies the subscriber when the action is done.
+     * If an user with the same login exists, the completable errors with a AlreadyExistingUsernameException.
+     *
+     * Warning: the user is updated in the database, don't forget to fetch again all is instances
+     * (see LoginService#refreshConnectedUser).
+     */
+    Completable changeUserLogin(User user, String newLogin);
+
+    /**
      * Change the password of an user.
      * @param user the user object
      * @param newPassword the new password

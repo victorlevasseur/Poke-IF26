@@ -14,7 +14,9 @@ import girard_levasseur.utt.fr.poke_if26.external.PasswordHash;
 import girard_levasseur.utt.fr.poke_if26.external.PasswordHasher;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
+import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import android.util.Base64;
@@ -37,10 +39,12 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Single<User> login(String username, char[] password) {
-        if (loggedUser != null) {
-            this.erasePassword(password);
-            return Single.error(new ImpossibleActionException(
-                    "Impossible à se loguer si un utilisateur l'est déjà !"));
+        synchronized (this) {
+            if (loggedUser != null) {
+                this.erasePassword(password);
+                return Single.error(new ImpossibleActionException(
+                        "Impossible à se loguer si un utilisateur l'est déjà !"));
+            }
         }
 
         return this.db.userDao().getUserByUsername(username)
@@ -52,7 +56,11 @@ public class LoginServiceImpl implements LoginService {
                     PasswordHash hash = PasswordHasher.hash(new String(password), Base64.decode(userWithLogin.getSalt(), 0));
 
                     if (hash.hash.equals(userWithLogin.getPasswordHash())) {
-                        this.loggedUser = userWithLogin;
+                        synchronized (this) {
+                            // Lock the whole service before changing the user reference.
+                            this.loggedUser = userWithLogin;
+                        }
+
                         return this.loggedUser;
                     } else {
                         // The password is invalid, throw a BadCredentialsException.
@@ -63,7 +71,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void logout() throws ImpossibleActionException {
+    public synchronized void logout() throws ImpossibleActionException {
         if (loggedUser == null) {
             throw new ImpossibleActionException("Impossible de se déconnecter si aucun utilisateur est connecté !");
         }
@@ -71,8 +79,24 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public User getConnectedUser() {
+    public synchronized User getConnectedUser() {
         return this.loggedUser;
+    }
+
+    @Override
+    public Completable refreshConnectedUser() throws ImpossibleActionException {
+        if (loggedUser == null) {
+            throw new ImpossibleActionException("Impossible de rafraichir l'utilisateur si aucun utilisateur est connecté !");
+        }
+        return db.userDao().getUserById(loggedUser.getId())
+                .doOnSuccess((refreshedUser) -> {
+                    synchronized (this) {
+                        // Lock the whole service before changing the user reference.
+                        loggedUser = refreshedUser;
+                    }
+                })
+                .toCompletable()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     private void erasePassword(char[] password) {

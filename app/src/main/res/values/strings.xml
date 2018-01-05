@@ -55,4 +55,10 @@
     <string name="change_password_confirmation_title">Confirmation</string>
     <string name="change_password_confirmation_message">Votre mot de passe a bien été changé.</string>
 
+    <!-- Strings related to the login change dialog fragment -->
+    <string name="change_login_dialog_title">Changement de l\'identifiant</string>
+    <string name="change_login_confirmation_title">Confirmation</string>
+    <string name="change_login_confirmation_message">Votre identifiant a bien été changé.</string>
+    <string name="change_login_already_exist_error">Impossible de changer votre identifiant car il existe déjà !</string>
+
 </resources>

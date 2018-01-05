@@ -19,6 +19,8 @@ import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * The settings page fragment
@@ -55,11 +57,20 @@ public class SettingsFragment extends Fragment {
                     return userService.changeUserPassword(
                             loginService.getConnectedUser(),
                             newPassword.toCharArray())
-                            .delay(500, TimeUnit.MILLISECONDS);
+                            .delay(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread(), true)
+                            .doAfterTerminate(loginService::refreshConnectedUser); // Refresh the connected user object after its update
                 });
-                modal.show(getFragmentManager(), "change_password_dialog_fragment");
+                modal.show(getFragmentManager(), "modal");
             } else if (index == SettingsItems.CHANGE_LOGIN_ITEM.getIndex()) {
-
+                ChangeLoginDialogFragment modal = ChangeLoginDialogFragment.newInstance();
+                modal.setLoginListener((newLogin) -> {
+                    return userService.changeUserLogin(
+                            loginService.getConnectedUser(),
+                            newLogin)
+                            .delay(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread(), true)
+                            .doAfterTerminate(loginService::refreshConnectedUser); // Refresh the connected user object after its update
+                });
+                modal.show(getFragmentManager(), "modal");
             } else if (index == SettingsItems.DELETE_ACCOUNT.getIndex()) {
 
             } else {
