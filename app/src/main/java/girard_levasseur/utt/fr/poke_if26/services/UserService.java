@@ -41,4 +41,12 @@ public interface UserService {
      */
     Completable changeUserPassword(User user, char[] newPassword);
 
+    /**
+     * Delete an user.
+     * Also release all the pokemons the user had captured.
+     * @param user the user to delete
+     * @return a completable that notifies the subscriber when the action is completed.
+     */
+    Completable deleteUser(User user);
+
 }

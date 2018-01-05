@@ -31,6 +31,13 @@ public interface PokemonInstanceDao {
     @Query("SELECT * FROM pokemoninstance WHERE id = :id")
     Single<PokemonInstance> getPokemonInstance(int id);
 
+    /**
+     * Release the pokemons captured by an user.
+     * @param userId the id of the user to release the pokemons of.
+     */
+    @Query("UPDATE pokemoninstance SET captured_by_user_id = NULL WHERE captured_by_user_id = :userId")
+    void releasePokemonsOfUser(int userId);
+
     @Insert
     void insertPokemonInstance(PokemonInstance instance);
 

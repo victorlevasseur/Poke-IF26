@@ -2,6 +2,7 @@ package girard_levasseur.utt.fr.poke_if26.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.activities.LoginActivity;
 import girard_levasseur.utt.fr.poke_if26.services.LoginService;
 import girard_levasseur.utt.fr.poke_if26.services.UserService;
 import io.reactivex.Completable;
@@ -72,7 +74,19 @@ public class SettingsFragment extends Fragment {
                 });
                 modal.show(getFragmentManager(), "modal");
             } else if (index == SettingsItems.DELETE_ACCOUNT.getIndex()) {
-
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.delete_account_dialog_title)
+                        .setMessage(R.string.delete_account_dialog_message)
+                        .setPositiveButton(android.R.string.yes, (dialog, button) -> {
+                            userService.deleteUser(loginService.getConnectedUser())
+                                    .subscribe(() -> {
+                                        loginService.logout();
+                                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                                    });
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
             } else {
                 Log.e(SettingsFragment.class.getName(), "Unknown item selected!");
             }

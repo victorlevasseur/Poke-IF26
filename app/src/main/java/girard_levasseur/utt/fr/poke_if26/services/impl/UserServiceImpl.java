@@ -80,6 +80,15 @@ public class UserServiceImpl implements UserService {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Completable deleteUser(User user) {
+        return Completable.fromCallable(() -> {
+            db.pokemonInstanceDao().releasePokemonsOfUser(user.getId());
+            db.userDao().deleteUser(user);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
     private PasswordHash hashPassword(char[] password) {
         byte[] salt = PasswordHasher.randomSalt();
         return PasswordHasher.hash(new String(password), salt);
