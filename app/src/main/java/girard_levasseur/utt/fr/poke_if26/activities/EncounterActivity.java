@@ -84,6 +84,11 @@ public class EncounterActivity extends AppCompatActivity {
 
                     pokemonNameTextView.setVisibility(View.VISIBLE);
                     loadingProgressBar.setVisibility(View.GONE);
+                }, (error) -> {
+                    // If an IOException (network error) is thrown
+                    pokemonNameTextView.setText(R.string.unavailable_pokemon_label);
+                    pokemonNameTextView.setVisibility(View.VISIBLE);
+                    loadingProgressBar.setVisibility(View.GONE);
                 });
 
         captureButton.setOnClickListener((view) -> {

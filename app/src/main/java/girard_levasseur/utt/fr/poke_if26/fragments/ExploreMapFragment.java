@@ -36,6 +36,7 @@ import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
 import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.services.GPSLocationService;
+import girard_levasseur.utt.fr.poke_if26.services.NetworkErrorRetryerService;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -51,6 +52,9 @@ public class ExploreMapFragment extends Fragment {
 
     @Inject
     public PokemonsService pokemonsService;
+
+    @Inject
+    public NetworkErrorRetryerService networkErrorRetryerService;
 
     private OnExploreMapFragmentInteractionListener mListener;
 
@@ -199,8 +203,9 @@ public class ExploreMapFragment extends Fragment {
             pokemonMarkerAndCircleList.clear();
         }
 
-        pokemonsService.getAvailableFetchedPokemons()
-                .subscribe(this::addPokemons);
+        networkErrorRetryerService
+                .retryIfNetworkError(pokemonsService.getAvailableFetchedPokemons())
+                .subscribe(this::addPokemons, error -> { loadingProgressBar.setVisibility(View.GONE); });
     }
 
     private void addPokemons(List<FetchedPokemonInstance> pokemons) {

@@ -65,4 +65,7 @@
     <string name="delete_account_dialog_title">Confirmation</string>
     <string name="delete_account_dialog_message">Êtes-vous sûr(e) de supprimer votre compte ?\nVos pokémons capturés seront libérés.</string>
 
+    <!-- Strings related to the network error alert dialog -->
+    <string name="network_error_dialog_title">Erreur</string>
+    <string name="network_error_dialog_message">Impossible de télécharger les informations des pokémons ! Voulez-vous réessayer ?</string>
 </resources>

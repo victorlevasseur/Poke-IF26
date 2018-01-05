@@ -7,8 +7,9 @@ import io.reactivex.Observable;
 
 /**
  * Created by victor on 29/11/17.
+ *
+ * Note: Only usable in the MainActivity and its child fragments.
  */
-
 public interface GPSLocationService {
     void enableLocationUpdates() throws GPSLocationNotAvailable;
     void disableLocationUpdates();

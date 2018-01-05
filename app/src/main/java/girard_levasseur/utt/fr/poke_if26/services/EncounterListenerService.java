@@ -5,6 +5,8 @@ import io.reactivex.Observable;
 
 /**
  * Created by victor on 07/12/17.
+ *
+ * Note: Only usable in the MainActivity and its child fragments.
  */
 public interface EncounterListenerService {
 
