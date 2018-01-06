@@ -12,10 +12,15 @@ import android.view.ViewGroup;
 
 import dagger.android.AndroidInjection;
 import girard_levasseur.utt.fr.poke_if26.R;
-import girard_levasseur.utt.fr.poke_if26.fragments.dummy.DummyContent;
-import me.sargunvohra.lib.pokekotlin.model.Pokemon;
+import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
+import girard_levasseur.utt.fr.poke_if26.entities.User;
+import girard_levasseur.utt.fr.poke_if26.services.LoginService;
+import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
+import io.reactivex.Single;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A fragment representing a list of Items.
@@ -25,11 +30,18 @@ import java.util.List;
  */
 public class PokedexFragment extends Fragment {
 
+    @Inject
+    public LoginService loginService;
+
+    @Inject
+    public PokemonsService pokemonsService;
+
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,15 +77,23 @@ public class PokedexFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            this.recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                this.recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                this.recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyPokedexRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            User currentUser = loginService.getConnectedUser();
+            Single<List<FetchedPokemonInstance>> capturedPokemons = this.pokemonsService
+                    .getCapturedFetchedPokemonsByUser(currentUser);
+            capturedPokemons.subscribe(this::initializeRecyclerView);
         }
         return view;
+    }
+
+    public void initializeRecyclerView(List<FetchedPokemonInstance> pokemons) {
+        this.recyclerView.setAdapter(new MyPokedexRecyclerViewAdapter(pokemons, mListener));
     }
 
 
@@ -108,6 +128,6 @@ public class PokedexFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Pokemon item);
+        void onListFragmentInteraction(FetchedPokemonInstance item);
     }
 }

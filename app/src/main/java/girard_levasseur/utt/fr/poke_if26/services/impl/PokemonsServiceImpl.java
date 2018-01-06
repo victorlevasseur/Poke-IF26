@@ -23,6 +23,7 @@ import girard_levasseur.utt.fr.poke_if26.entities.User;
 import girard_levasseur.utt.fr.poke_if26.services.PokeIF26Database;
 import girard_levasseur.utt.fr.poke_if26.services.PokemonsService;
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -76,6 +77,13 @@ public class PokemonsServiceImpl implements PokemonsService {
     @Override
     public Single<List<PokemonInstance>> getAvailablePokemons() {
         return db.pokemonInstanceDao().getNotCapturedPokemons()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Single<List<PokemonInstance>> getCapturedPokemonByUser(User user) {
+        return db.pokemonInstanceDao().getPokemonsCapturedByUser(user.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -139,6 +147,34 @@ public class PokemonsServiceImpl implements PokemonsService {
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+
+    @Override
+    public Single<List<FetchedPokemonInstance>> getCapturedFetchedPokemonsByUser(User user) {
+        return this.getCapturedPokemonByUser(user)
+                .observeOn(Schedulers.io())
+                .flatMap((pokemons) -> {
+                    if (pokemons.size() == 0) {
+                        return Single.just(new ArrayList<FetchedPokemonInstance>());
+                    }
+
+                    List<Single<FetchedPokemonInstance>> fetchedPokemonInstanceSinglesList =
+                            new ArrayList<>();
+                    for (Iterator<PokemonInstance> it = pokemons.iterator(); it.hasNext();) {
+                        // Map the PokemonInstance to a Single<FetchedPokemonInstance.>
+                        fetchedPokemonInstanceSinglesList.add(fetchPokemon(it.next()));
+                    }
+                    // Zip all the observables into an observable of a list of all the results.
+                    return Single.zip(
+                            fetchedPokemonInstanceSinglesList,
+                            (array) -> Arrays.asList(Arrays.copyOf(
+                                    array,
+                                    array.length,
+                                    FetchedPokemonInstance[].class)));
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     @Override
     public Single<Boolean> capturePokemonById(int pokemonId, User byUser) {

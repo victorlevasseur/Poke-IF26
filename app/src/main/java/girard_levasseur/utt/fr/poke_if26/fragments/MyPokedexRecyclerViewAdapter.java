@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import girard_levasseur.utt.fr.poke_if26.R;
+import girard_levasseur.utt.fr.poke_if26.dto.FetchedPokemonInstance;
 import girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment.OnListFragmentInteractionListener;
 import me.sargunvohra.lib.pokekotlin.model.Pokemon;
 
@@ -23,10 +24,10 @@ import java.util.List;
  */
 public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedexRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Pokemon> mValues;
+    private final List<FetchedPokemonInstance> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyPokedexRecyclerViewAdapter(List<Pokemon> items, OnListFragmentInteractionListener listener) {
+    public MyPokedexRecyclerViewAdapter(List<FetchedPokemonInstance> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -40,18 +41,14 @@ public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedex
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Pokemon pokemon = mValues.get(position);
-        holder.mItem = pokemon;
+        FetchedPokemonInstance fetchedPokemonInstance = mValues.get(position);
+        Pokemon pokemon = fetchedPokemonInstance.getPokemon();
+        holder.mItem = fetchedPokemonInstance;
+
         String id = (new Integer(pokemon.getId())).toString();
         holder.mIdView.setText(id);
         holder.mContentView.setText(pokemon.getName());
-
-        try {
-            Picasso.with(holder.mImageView.getContext()).load(pokemon.getSprites().getFrontDefault()).into(holder.mImageView);
-        } catch (Exception e) {
-            // Pas d'image
-            Log.e("PokedexImg","No image");
-        }
+        holder.mImageView.setImageBitmap(fetchedPokemonInstance.getPokemonImage());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +72,7 @@ public class MyPokedexRecyclerViewAdapter extends RecyclerView.Adapter<MyPokedex
         public final TextView mIdView;
         public final TextView mContentView;
         public final ImageView mImageView;
-        public Pokemon mItem;
+        public FetchedPokemonInstance mItem;
 
         public ViewHolder(View view) {
             super(view);

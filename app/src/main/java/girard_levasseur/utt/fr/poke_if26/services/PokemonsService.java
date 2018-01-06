@@ -39,6 +39,13 @@ public interface PokemonsService {
     Single<List<PokemonInstance>> getAvailablePokemons();
 
     /**
+     * Get the pokemons captured by an user.
+     * @return an observable to a list of captured pokemons. The observable will do
+     * further operations on the UI thread.
+     */
+    Single<List<PokemonInstance>> getCapturedPokemonByUser(User user);
+
+    /**
      * Get the available pokemons and the updates of the available pokemons.
      * @return a flowable to a list of available pokemons. Each time the available pokemons change,
      * the flowable emits a new value.
@@ -60,6 +67,14 @@ public interface PokemonsService {
      * further operations on the UI thread.
      */
     Single<List<FetchedPokemonInstance>> getAvailableFetchedPokemons();
+
+    /**
+     * Get the list of pokemons captured by the user with their pokemon data fetched from the PokeAPI.
+     *
+     * @return a single observable to a list of fetched pokemon instances. The observable will do
+     * further operations on the UI thread.
+     */
+    Single<List<FetchedPokemonInstance>> getCapturedFetchedPokemonsByUser(User user);
 
     /**
      * Try to capture a pokemon.
