@@ -6,8 +6,6 @@
     android:name="girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="girard_levasseur.utt.fr.poke_if26.fragments.PokedexFragment"
     tools:listitem="@layout/fragment_pokedex" />
